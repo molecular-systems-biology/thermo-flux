@@ -1,0 +1,3 @@
+[submodule "manuscript"]
+	path = manuscript
+	url = git@github.com:molecular-systems-biology/thermo_flux_paper.git
