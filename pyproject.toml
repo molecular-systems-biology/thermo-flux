@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "thermo_flux"
+version = "0.0.1"
+authors = [
+  {name="Edward Smith", email="edward.smith@biology.ox.ac.uk" },
+  {name="Nathan Fargier", email="nathan.fargier@rug.nl" }
+]
+description = "Thermodynamic flux analysis"
+readme = "README.md"
+requires-python = "~=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GNU General Public License v3.0",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "numpy>=1.13",
+    "h5py",
+    "openpyxl",
+    "cobra",
+    "pandas>=1.4.4", 
+    "click",
+    "click-log",
+    "importlib-resources==5.10",
+    "periodictable",
+    "python-dateutil",
+    "requests",
+    "equilibrator-api>=0.4.7",
+    "component-contribution>=0.4.3",
+    "equilibrator-cache>=0.4.3",
+    "equilibrator-assets>=0.4.2",
+    "jupyter",
+    "matplotlib",
+    "seaborn"
+]
+
+[project.urls]
+"Homepage" = "https://github.com/molecular-systems-biology/thermo-flux"
+"Bug Tracker" = "https://github.com/molecular-systems-biology/thermo-flux/issues"
+
+[tool.setuptools]
+#packages = ["thermo_flux"]
