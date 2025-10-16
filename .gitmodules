@@ -1,9 +1,6 @@
 [submodule "manuscript"]
 	path = manuscript
 	url = git@github.com:molecular-systems-biology/thermo_flux_paper.git
-[submodule "src"]
-	path = src
-	url = git@github.com:tednsmith/thermo_flux.git
 [submodule "docs"]
 	path = docs
 	url = git@github.com:nfargier/thermoflux-rtd.git
