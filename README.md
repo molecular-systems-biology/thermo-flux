@@ -1,6 +1,6 @@
 # thermo_flux
 Tools for thermodynamically constrained FBA [[1](#references)]
-
+Full documentation on ReadTheDocs (https://thermo-flux.readthedocs.io/en/latest/)
 
 ## Installation
 
