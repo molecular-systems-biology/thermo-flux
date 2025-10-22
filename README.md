@@ -39,4 +39,9 @@ Example usage notebooks can be found in the examples directory.
 
 
 ## References 
-1 .Niebel B, Leupold S, Heinemann M. An upper limit on Gibbs energy dissipation governs cellular metabolism. Nat Metab. 2019 Jan;1(1):125-132. doi: 10.1038/s42255-018-0006-7. Epub 2019 Jan 7. PMID: 32694810.
+1. Niebel B, Leupold S, Heinemann M. An upper limit on Gibbs energy dissipation governs cellular metabolism. Nat Metab. 2019 Jan;1(1):125-132. doi: 10.1038/s42255-018-0006-7. Epub 2019 Jan 7. PMID: 32694810.
+
+2. M.E. Beber, M.G. Gollub, D. Mozaffari, K.M. Shebek, A.I. Flamholz, R. Milo, E. Noor (2021) eQuilibrator 3.0: a database solution for thermodynamic constant estimation Nucleic Acids Research [DOI: 10.1093/nar/gkab1106]
+
+## Acknowledgments
+Thanks to Moritz Beber, Elad Noor and Mattia Gollub for helpful discussions and advice. 
