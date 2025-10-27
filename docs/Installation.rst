@@ -17,7 +17,7 @@ Installation
 
 3. Navigate to where you cloned the thermo_flux directory and run (with the proper conda environment active) :
 
-	```python -m pip install -e .```
+	```python -m pip install .```
 
 - For development use the -e flag (for an editable install), 
 
