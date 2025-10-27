@@ -3,7 +3,7 @@
 Installation
 ============
 	
-1. To avoid dependency conflicts it is reccomended to use a python environment e.g:
+1. To avoid dependency conflicts it is recommended to use a python environment e.g:
 
 	```conda create -n thermoflux python=3.11```
 	 
@@ -15,7 +15,11 @@ Installation
 
 	```cd thermo_flux```
 
-3. For development use the -e flag (for an editable install), navigate to where you cloned the thermo_flux directory and run:
+3. Navigate to where you cloned the thermo_flux directory and run (with the proper conda environment active) :
+
+	```python -m pip install -e .```
+
+- For development use the -e flag (for an editable install), 
 
 	```python -m pip install -e .``` 
 	
