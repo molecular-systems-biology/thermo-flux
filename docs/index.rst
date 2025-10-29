@@ -15,7 +15,7 @@ Requirements
 * Python >= 3.11
 * Gurobi (https://support.gurobi.com/hc/en-us/articles/360044290292-How-do-I-install-Gurobi-for-Python-)
 
-For more details, see :ref: `Installation`
+For more details, see :ref:`installation`.
 
 How to use and examples 
 ***********************
