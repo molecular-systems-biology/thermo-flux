@@ -2,7 +2,7 @@
 
 from cobra.core import Metabolite
 
-from thermo_flux.utils.annotation import get_suitable_ids
+# from thermo_flux.utils.annotation import get_suitable_ids
 
 from thermo_flux.tools import drg_tools 
 
