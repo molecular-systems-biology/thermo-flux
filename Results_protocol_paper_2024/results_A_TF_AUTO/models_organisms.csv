@@ -1,0 +1,108 @@
+bigg_id,organism
+e_coli_core,Escherichia coli str. K-12 substr. MG1655
+iAB_RBC_283,Homo sapiens
+iAF1260,Escherichia coli str. K-12 substr. MG1655
+iAF1260b,Escherichia coli str. K-12 substr. MG1655
+iAF692,Methanosarcina barkeri str. Fusaro
+iAF987,Geobacter metallireducens GS-15
+iAM_Pb448,Plasmodium berghei
+iAM_Pc455,Plasmodium cynomolgi strain B
+iAM_Pf480,Plasmodium falciparum 3D7
+iAM_Pk459,Plasmodium knowlesi strain H
+iAM_Pv461,Plasmodium vivax Sal-1
+iAPECO1_1312,Escherichia coli APEC O1
+iAT_PLT_636,Homo sapiens
+iB21_1397,Escherichia coli BL21(DE3)
+iBWG_1329,Escherichia coli BW2952
+ic_1306,Escherichia coli CFT073
+iCHOv1,Cricetulus griseus
+iCN718,Acinetobacter baumannii AYE
+iCN900,Clostridioides difficile 630
+iE2348C_1286,Escherichia coli O127:H6 str. E2348/69
+iEC042_1314,Escherichia coli 042
+iEC1344_C,Escherichia coli C
+iEC1349_Crooks,Escherichia coli ATCC 8739
+iEC1356_Bl21DE3,Escherichia coli BL21(DE3)
+iEC1364_W,Escherichia coli W
+iEC1368_DH5a,Escherichia coli DH5[alpha]
+iEC1372_W3110,Escherichia coli str. K-12 substr. W3110
+iEC55989_1330,Escherichia coli 55989
+iECABU_c1320,Escherichia coli ABU 83972
+iECB_1328,Escherichia coli B str. REL606
+iECBD_1354,Escherichia coli 'BL21-Gold(DE3)pLysS AG'
+iECD_1391,Escherichia coli BL21(DE3)
+iECDH10B_1368,Escherichia coli str. K-12 substr. DH10B
+iEcDH1_1363,Escherichia coli DH1
+iECDH1ME8569_1439,Escherichia coli DH1
+iEcE24377_1341,Escherichia coli O139:H28 str. E24377A
+iECED1_1282,Escherichia coli ED1a
+iECH74115_1262,Escherichia coli O157:H7 str. EC4115
+iEcHS_1320,Escherichia coli HS
+iECIAI1_1343,Escherichia coli IAI1
+iECIAI39_1322,Escherichia coli IAI39
+iECNA114_1301,Escherichia coli NA114
+iECO103_1326,Escherichia coli O103:H2 str. 12009
+iECO111_1330,Escherichia coli O111:H- str. 11128
+iECO26_1355,Escherichia coli O26:H11 str. 11368
+iECOK1_1307,Escherichia coli IHE3034
+iEcolC_1368,Escherichia coli ATCC 8739
+iECP_1309,Escherichia coli 536
+iECs_1301,Escherichia coli O157:H7 str. Sakai
+iECS88_1305,Escherichia coli S88
+iECSE_1348,Escherichia coli SE11
+iECSF_1327,Escherichia coli SE15
+iEcSMS35_1347,Escherichia coli SMS-3-5
+iECSP_1301,Escherichia coli O157:H7 str. TW14359
+iECUMN_1333,Escherichia coli UMN026
+iECW_1372,Escherichia coli W
+iEK1008,Mycobacterium tuberculosis H37Rv
+iEKO11_1354,Escherichia coli KO11FL
+iETEC_1333,Escherichia coli ETEC H10407
+iG2583_1286,Escherichia coli O55:H7 str. CB9615
+iHN637,Clostridium ljungdahlii DSM 13528
+iIS312,Trypanosoma cruzi Dm28c
+iIS312_Amastigote,Trypanosoma cruzi Dm28c
+iIS312_Epimastigote,Trypanosoma cruzi Dm28c
+iIS312_Trypomastigote,Trypanosoma cruzi Dm28c
+iIT341,Helicobacter pylori 26695
+iJB785,Synechococcus elongatus PCC 7942
+iJN1463,Pseudomonas putida KT2440
+iJN678,Synechocystis sp. PCC 6803
+iJN746,Pseudomonas putida KT2440
+iJO1366,Escherichia coli str. K-12 substr. MG1655
+iJR904,Escherichia coli str. K-12 substr. MG1655
+iLB1027_lipid,Phaeodactylum tricornutum CCAP 1055/1
+iLF82_1304,Escherichia coli LF82
+iLJ478,Thermotoga maritima MSB8
+iML1515,Escherichia coli str. K-12 substr. MG1655
+iMM1415,Mus musculus
+iMM904,Saccharomyces cerevisiae S288C
+iND750,Saccharomyces cerevisiae S288C
+iNF517,Lactococcus lactis subsp. cremoris MG1363
+iNJ661,Mycobacterium tuberculosis H37Rv
+iNRG857_1313,Escherichia coli O83:H1 str. NRG 857C
+iPC815,Yersinia pestis CO92
+iRC1080,Chlamydomonas reinhardtii
+iS_1188,Shigella flexneri 2a str. 2457T
+iSB619,Staphylococcus aureus subsp. aureus N315
+iSbBS512_1146,Shigella boydii CDC 3083-94
+iSBO_1134,Shigella boydii Sb227
+iSDY_1059,Shigella dysenteriae Sd197
+iSF_1195,Shigella flexneri 2a str. 301
+iSFV_1184,Shigella flexneri 5 str. 8401
+iSFxv_1172,Shigella flexneri 2002017
+iSSON_1240,Shigella sonnei Ss046
+iSynCJ816,Synechocystis sp. PCC 6803
+iUMN146_1321,Escherichia coli UM146
+iUMNK88_1353,Escherichia coli UMNK88
+iUTI89_1310,Escherichia coli UTI89
+iWFL_1372,Escherichia coli W
+iY75_1357,Escherichia coli str. K-12 substr. W3110
+iYL1228,Klebsiella pneumoniae subsp. pneumoniae MGH 78578
+iYO844,Bacillus subtilis subsp. subtilis str. 168
+iYS1720,Salmonella pan-reactome
+iYS854,Staphylococcus aureus subsp. aureus USA300_TCH1516
+iZ_1308,Escherichia coli O157:H7 str. EDL933
+RECON1,Homo sapiens
+Recon3D,Homo sapiens
+STM_v1_0,Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
