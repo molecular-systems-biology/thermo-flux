@@ -129,8 +129,6 @@ For each transport reaction, ‘Thermo-Flux’ will automatically determine the 
 
 to define an additional proton moving from the extracellular (``e``) compartment to the cytosol (``c``).
 
-.. rubric:: Box 2: additional considerations for transport reactions
---------------------------------------------------------------------
 
 **Adding transporter variants**
 Additionally, in case of transport processes, for which at the given pH value no charge-neutral transport variant exists, we suggest introducing an additional transport reaction, in which protons balancing the charge are co-translocated together with the respective species, i.e., adding a proton symporter or antiporter. This additional transport variant ensures that for every metabolite, a transport variant exists that does not translocate net charge.
@@ -211,7 +209,7 @@ The concentration values will then be automatically converted to mol/L before ap
 
 The function ``model.add_TFBA_variables()`` sets up a thermodynamic FBA optimisation problem using the Gurobi optimiser that can be optimised using ``model.m.optimize()``. Implementation of the constraints in the linear program is detailed in the methods (see: implementing conditional constraints in a linear program).
 
-.. rubric:: Box 3: additional considerations for the formulation of the thermodynamic/stoichiometric solution space
+.. rubric:: Box 2: additional considerations for the formulation of the thermodynamic/stoichiometric solution space
 -------------------------------------------------------------------------------------------------------------------
 
 **Compartmented metabolite concentrations and whole cell concentrations**
@@ -251,13 +249,23 @@ The Dataframe for the fluxes and the metabolite data needs to be in the followin
 
 Note the pandas.MultiIndex (condition,rxn/met).
 
+**Objective function of a regression optimization**
 
-\textbf{Objective function of a regression optimization}
-The objective function of the optimization problem that is set up using the function \verb|gurobi.solver.regression()| and minimized is :
-\[\forall\ v_{j} \in RXN,\ c_{i} \in MET\ \quad|\quad f:\left( c_{i},v_{j} \right) \mapsto \Sigma_{j}\left( \frac{v_{j}^{obs,mean} - \widehat{v_{j}}}{v_{j}^{obs,std}} \right)^{2} + \Sigma_{i}\left( \frac{V_{c} \cdot \exp\left( \ln\left( c_{i}^{obs,mean} \right) \right) + V_{m} \cdot \exp\left( \ln\left( c_{i}^{obs,mean} \right) \right) - \widehat{c_{i}}}{c_{i}^{obs,std}} \right)^{2}\]
-Here, \( v_{j}^{obs,mean} \) and \( v_{j}^{obs,std} \) denote the experimentally measured mean and standard deviation of flux \( v_{j} \), respectively, while \( \widehat{v_{j}} \) represents the model variable flux. Similarly, \( c_{i}^{obs,mean} \) and \( c_{i}^{obs,std} \) are the measured mean and standard deviation of metabolite \( c_{i} \), and \( \widehat{c_{i}} \) is the model variable metabolite concentration. \( V_{c} \) and \( V_{m} \) correspond to the relative volumes of the cytosolic and mitochondrial compartments, respectively. The sets \( RXN \) and \( MET \) represent all reactions and metabolites considered in the model.
+The objective function of the optimization problem that is set up using the function ``gurobi.solver.regression()`` and minimized is:
 
-.. rubric:: Box 4: additional considerations for regressions
+.. math::
+
+   \forall\ v_{j} \in RXN,\ c_{i} \in MET \quad | \quad
+   f:\left( c_{i},v_{j} \right) \mapsto
+   \sum_{j}\left( \frac{v_{j}^{obs,mean} - \widehat{v_{j}}}{v_{j}^{obs,std}} \right)^{2}
+   + \sum_{i}\left( \frac{V_{c} \cdot \exp\left( \ln\left( c_{i}^{obs,mean} \right) \right)
+   + V_{m} \cdot \exp\left( \ln\left( c_{i}^{obs,mean} \right) \right)
+   - \widehat{c_{i}}}{c_{i}^{obs,std}} \right)^{2}
+
+Here, :math:`v_{j}^{obs,mean}` and :math:`v_{j}^{obs,std}` denote the experimentally measured mean and standard deviation of flux :math:`v_{j}`, respectively, while :math:`\widehat{v_{j}}` represents the model-predicted flux. Similarly, :math:`c_{i}^{obs,mean}` and :math:`c_{i}^{obs,std}` are the measured mean and standard deviation of metabolite :math:`c_{i}`, and :math:`\widehat{c_{i}}` is the model-predicted metabolite concentration. :math:`V_{c}` and :math:`V_{m}` correspond to the relative volumes of the cytosolic and mitochondrial compartments, respectively. The sets :math:`RXN` and :math:`MET` represent all reactions and metabolites considered in the model.
+
+
+.. rubric:: Box 3: additional considerations for regressions
 ------------------------------------------------------------
 
 **Model starting points**
