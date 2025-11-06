@@ -255,12 +255,12 @@ The objective function of the optimization problem that is set up using the func
 
 .. math::
 
-   \forall\ v_{j} \in RXN,\ c_{i} \in MET \quad | \quad
-   f:\left( c_{i},v_{j} \right) \mapsto
-   \sum_{j}\left( \frac{v_{j}^{obs,mean} - \widehat{v_{j}}}{v_{j}^{obs,std}} \right)^{2}
+   \ v_{j} \in RXN,\ c_{i} \in MET \quad | \quad
+   f:\left( c,v \right) \mapsto
+   \sum_{j}\left( \frac{v_{j}^{obs,mean} - v_{j}}{v_{j}^{obs,std}} \right)^{2}
    + \sum_{i}\left( \frac{V_{c} \cdot \exp\left( \ln\left( c_{i}^{obs,mean} \right) \right)
    + V_{m} \cdot \exp\left( \ln\left( c_{i}^{obs,mean} \right) \right)
-   - \widehat{c_{i}}}{c_{i}^{obs,std}} \right)^{2}
+   - c_{i}}{c_{i}^{obs,std}} \right)^{2}
 
 Here, :math:`v_{j}^{obs,mean}` and :math:`v_{j}^{obs,std}` denote the experimentally measured mean and standard deviation of flux :math:`v_{j}`, respectively, while :math:`\widehat{v_{j}}` represents the model-predicted flux. Similarly, :math:`c_{i}^{obs,mean}` and :math:`c_{i}^{obs,std}` are the measured mean and standard deviation of metabolite :math:`c_{i}`, and :math:`\widehat{c_{i}}` is the model-predicted metabolite concentration. :math:`V_{c}` and :math:`V_{m}` correspond to the relative volumes of the cytosolic and mitochondrial compartments, respectively. The sets :math:`RXN` and :math:`MET` represent all reactions and metabolites considered in the model.
 
