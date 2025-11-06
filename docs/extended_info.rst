@@ -251,6 +251,12 @@ The Dataframe for the fluxes and the metabolite data needs to be in the followin
 
 Note the pandas.MultiIndex (condition,rxn/met).
 
+
+\textbf{Objective function of a regression optimization}
+The objective function of the optimization problem that is set up using the function \verb|gurobi.solver.regression()| and minimized is :
+\[\forall\ v_{j} \in RXN,\ c_{i} \in MET\ \quad|\quad f:\left( c_{i},v_{j} \right) \mapsto \Sigma_{j}\left( \frac{v_{j}^{obs,mean} - \widehat{v_{j}}}{v_{j}^{obs,std}} \right)^{2} + \Sigma_{i}\left( \frac{V_{c} \cdot \exp\left( \ln\left( c_{i}^{obs,mean} \right) \right) + V_{m} \cdot \exp\left( \ln\left( c_{i}^{obs,mean} \right) \right) - \widehat{c_{i}}}{c_{i}^{obs,std}} \right)^{2}\]
+Here, \( v_{j}^{obs,mean} \) and \( v_{j}^{obs,std} \) denote the experimentally measured mean and standard deviation of flux \( v_{j} \), respectively, while \( \widehat{v_{j}} \) represents the model variable flux. Similarly, \( c_{i}^{obs,mean} \) and \( c_{i}^{obs,std} \) are the measured mean and standard deviation of metabolite \( c_{i} \), and \( \widehat{c_{i}} \) is the model variable metabolite concentration. \( V_{c} \) and \( V_{m} \) correspond to the relative volumes of the cytosolic and mitochondrial compartments, respectively. The sets \( RXN \) and \( MET \) represent all reactions and metabolites considered in the model.
+
 .. rubric:: Box 4: additional considerations for regressions
 ------------------------------------------------------------
 
