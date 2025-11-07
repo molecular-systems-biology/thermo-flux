@@ -1,0 +1,108 @@
+,Status,stoichiometric optimization,Failed to balance,Biomass reactions,atom bag unbalanced rxns,Balance warnings,T-S optimization,Organism,group
+iRC1080.sbml,TF applied,6.404693015714919,12.0,5.0,382.0,6.0,0.0,Chlamydomonas reinhardtii,Protists
+iE2348C_1286.sbml,TF applied,0.9824784386660066,0.0,4.0,231.0,0.0,0.4181412662312416,E. Coli,E. Coli
+iEcE24377_1341.sbml,TF applied,0.9824784386660044,1.0,4.0,244.0,0.0,0.4181411184252546,E. Coli,E. Coli
+iJN1463.sbml,TF applied,0.5865026188636996,0.0,4.0,340.0,1.0,0.0,Pseudomonas putida,Gram-negative bacteria
+iSynCJ816.sbml,Not loaded,,,,,,,Synechocystis sp.,Cyanobacteria
+RECON1.sbml,TF applied,0.0,0.0,2.0,456.0,28.0,0.0,Mammals,Mammals
+iECW_1372.sbml,TF applied,0.9824784386660046,1.0,4.0,244.0,0.0,0.0,E. Coli,E. Coli
+iEK1008.sbml,TF applied,0.058173872989699,0.0,3.0,154.0,1.0,0.0,Mycobacterium tuberculosis,Gram-positive bacteria
+iECUMN_1333.sbml,TF applied,0.9826920127837736,0.0,4.0,233.0,0.0,0.4181844894317485,E. Coli,E. Coli
+iECD_1391.sbml,TF applied,0.9756145115851292,0.0,4.0,239.0,0.0,0.4181000950764829,E. Coli,E. Coli
+iEcSMS35_1347.sbml,TF applied,0.9824784386660044,1.0,4.0,240.0,0.0,0.4181001088481788,E. Coli,E. Coli
+iEcHS_1320.sbml,TF applied,0.982478438666004,1.0,4.0,237.0,0.0,0.4181000950764458,E. Coli,E. Coli
+iUMNK88_1353.sbml,TF applied,0.9824784386660036,1.0,4.0,251.0,0.0,0.418141285500183,E. Coli,E. Coli
+iEC1368_DH5a.sbml,TF applied,0.9823963461343016,0.0,4.0,270.0,0.0,0.4180238504957056,E. Coli,E. Coli
+iSB619.sbml,TF applied,0.1580502916027918,0.0,17.0,52.0,0.0,0.0,Staphylococcus aureus,Gram-positive bacteria
+iEC55989_1330.sbml,TF applied,0.9824784386660016,1.0,4.0,236.0,0.0,0.4181411184252546,E. Coli,E. Coli
+iEC1364_W.sbml,TF applied,0.9927528283821824,0.0,4.0,278.0,0.0,0.4194061553265629,E. Coli,E. Coli
+iPC815.sbml,TF applied,0.2835583812148257,0.0,4.0,142.0,2.0,0.2129980996372253,Yersinia pestis,Gram-negative bacteria
+iCN718.sbml,Not loaded,,,,,,,Acinetobacter baumannii,Gram-negative bacteria
+iJB785.sbml,TF applied,0.1072210563012101,3.0,11.0,124.0,1.0,0.0,Synechococcus elongatus,Cyanobacteria
+iMM904.sbml,TF applied,0.2878657037040177,0.0,3.0,101.0,4.0,2.416785563118432e-09,Saccharomyces cerevisiae,Fungi
+iHN637.sbml,TF applied,0.2244545421198835,0.0,3.0,45.0,0.0,0.0,Clostridium ljungdahlii,Gram-positive bacteria
+iLJ478.sbml,TF applied,0.2284067920294653,0.0,3.0,49.0,0.0,0.0,Thermotoga maritima,Thermophiles
+iIS312_Amastigote.sbml,TF applied,25.339036305771213,0.0,3.0,108.0,0.0,6.612428139739419,Trypanosoma cruzi,Flagellates
+iNJ661.sbml,TF applied,0.0525498010085006,0.0,3.0,99.0,0.0,0.0,Mycobacterium tuberculosis,Gram-positive bacteria
+iAB_RBC_283.sbml,TF applied,0.0,0.0,2.0,126.0,1.0,0.0,Mammals,Mammals
+iAF987.sbml,TF applied,0.0473224350503383,0.0,4.0,194.0,0.0,0.0,Geobacter metallireducens,Gram-negative bacteria
+iECDH1ME8569_1439.sbml,TF applied,0.9824784386660068,0.0,4.0,234.0,0.0,0.4181412512767498,E. Coli,E. Coli
+iAM_Pf480.sbml,TF applied,0.6871751707722245,0.0,3.0,106.0,0.0,0.0,Plasmodium falciparum,Protists
+e_coli_core.sbml,TF applied,0.8739215069684301,0.0,3.0,1.0,0.0,0.3686673591268438,E. Coli,E. Coli
+iECBD_1354.sbml,TF applied,0.9756145115851286,0.0,4.0,237.0,0.0,0.4181412515845157,E. Coli,E. Coli
+iSF_1195.sbml,TF applied,0.9145918468942495,0.0,4.0,228.0,0.0,0.4247545703351638,Shigella flexneri,Gram-negative bacteria
+STM_v1_0.sbml,TF applied,0.4780259565845833,0.0,5.0,255.0,2.0,0.0,Salmonella enterica,Gram-negative bacteria
+iJN678.sbml,TF applied,0.0633082816957121,1.0,5.0,96.0,3.0,1.1637045066406985e-06,Synechocystis sp.,Cyanobacteria
+iYL1228.sbml,TF applied,1.042637497977382,0.0,3.0,394.0,0.0,0.3239544675836503,Klebsiella pneumoniae,Gram-negative bacteria
+iAM_Pb448.sbml,TF applied,0.6586991858988221,0.0,3.0,105.0,0.0,0.0,Plasmodium berghei,Protists
+iEC1349_Crooks.sbml,TF applied,0.9865789307459416,0.0,4.0,269.0,0.0,0.4208170613754724,E. Coli,E. Coli
+Recon3D.sbml,TF applied,760.1911201347416,0.0,5.0,1357.0,388.0,0.0,Mammals,Mammals
+iEC1356_Bl21DE3.sbml,TF applied,0.9767013604875432,0.0,4.0,275.0,0.0,0.4194312134858681,E. Coli,E. Coli
+iS_1188.sbml,TF applied,0.8570768327332395,0.0,4.0,227.0,0.0,0.3820425725226917,Shigella flexneri,Gram-negative bacteria
+iECP_1309.sbml,TF applied,0.9824784386660038,0.0,4.0,244.0,0.0,0.4177312421101458,E. Coli,E. Coli
+iND750.sbml,TF applied,0.0973233759037677,0.0,3.0,88.0,0.0,0.0,Saccharomyces cerevisiae,Fungi
+iECED1_1282.sbml,TF applied,0.982463443376804,0.0,4.0,236.0,0.0,0.4181347985876059,E. Coli,E. Coli
+iEcolC_1368.sbml,TF applied,0.982478438666006,0.0,4.0,243.0,0.0,0.4181412512767451,E. Coli,E. Coli
+iUMN146_1321.sbml,TF applied,0.9824784386660064,1.0,4.0,244.0,0.0,0.3615141583006952,E. Coli,E. Coli
+iEC042_1314.sbml,TF applied,0.9824784386660012,0.0,4.0,234.0,0.0,0.4181411184252563,E. Coli,E. Coli
+iETEC_1333.sbml,TF applied,0.982478438666006,0.0,4.0,242.0,0.0,0.4181412538296679,E. Coli,E. Coli
+iZ_1308.sbml,TF applied,0.982478438666006,0.0,4.0,240.0,0.0,0.4181381008218942,E. Coli,E. Coli
+iSFV_1184.sbml,TF applied,0.8938577495747801,0.0,4.0,227.0,0.0,0.41817790253319,Shigella flexneri,Gram-negative bacteria
+iIS312_Trypomastigote.sbml,TF applied,53.03632988597188,0.0,4.0,109.0,0.0,7.657500831538435,Trypanosoma cruzi,Flagellates
+iY75_1357.sbml,TF applied,0.9824784386660064,0.0,4.0,234.0,0.0,0.0,E. Coli,E. Coli
+iYO844.sbml,TF applied,0.1179663893223993,0.0,3.0,84.0,0.0,0.0,Bacillus subtilis,Gram-positive bacteria
+iYS1720.sbml,TF applied,0.4961691073009714,0.0,6.0,614.0,2.0,0.0,Salmonella pan-reactome,Gram-negative bacteria
+iECABU_c1320.sbml,TF applied,0.982478438666007,1.0,4.0,245.0,0.0,0.4181411184252548,E. Coli,E. Coli
+iEC1344_C.sbml,TF applied,0.982396346134302,0.0,4.0,260.0,0.0,0.4180238355943234,E. Coli,E. Coli
+iLF82_1304.sbml,TF applied,0.982478438666006,1.0,4.0,241.0,0.0,0.0,E. Coli,E. Coli
+iECIAI39_1322.sbml,TF applied,0.982840964071916,1.0,4.0,240.0,0.0,0.3914426299155399,E. Coli,E. Coli
+iCN900.sbml,Not loaded,,,,,,,Clostridioides difficile,Gram-positive bacteria
+iCHOv1.sbml,TF applied,0.0323689716020081,1.0,4.0,814.0,38.0,0.0,Cricetulus griseus,Mammals
+iEKO11_1354.sbml,TF applied,0.9824784386660048,1.0,4.0,244.0,0.0,0.4181412512767474,E. Coli,E. Coli
+iECSF_1327.sbml,TF applied,0.9866163806119164,0.0,4.0,239.0,0.0,0.4181394274851158,E. Coli,E. Coli
+iECH74115_1262.sbml,TF applied,0.9824784386660058,0.0,4.0,231.0,0.0,0.4181370389623633,E. Coli,E. Coli
+iECSP_1301.sbml,TF applied,0.982478438666007,0.0,4.0,233.0,0.0,0.3943689813873845,E. Coli,E. Coli
+iJO1366.sbml,TF applied,0.9865144469529769,0.0,4.0,221.0,0.0,0.3917519247446058,E. Coli,E. Coli
+iECNA114_1301.sbml,TF applied,0.982478438666005,0.0,4.0,230.0,0.0,0.3131634957778337,E. Coli,E. Coli
+iSFxv_1172.sbml,TF applied,0.8940890261581895,0.0,4.0,228.0,0.0,0.4182829332352714,Shigella flexneri,Gram-negative bacteria
+iECOK1_1307.sbml,TF applied,0.9824784386660084,1.0,4.0,244.0,0.0,0.4176740683247016,E. Coli,E. Coli
+iG2583_1286.sbml,TF applied,0.9824784386660064,0.0,4.0,228.0,0.0,0.4174040507401432,E. Coli,E. Coli
+iECO103_1326.sbml,TF applied,0.982478438666006,1.0,4.0,235.0,0.0,0.4181412512767448,E. Coli,E. Coli
+iIT341.sbml,TF applied,0.692812693473446,0.0,3.0,22.0,0.0,1.8852683696669616e-08,Helicobacter pylori,Gram-negative bacteria
+iIS312_Epimastigote.sbml,TF applied,50.678072611542426,0.0,3.0,108.0,0.0,6.690216768387001,Trypanosoma cruzi,Flagellates
+iECs_1301.sbml,TF applied,0.9824784386660048,0.0,4.0,240.0,0.0,0.4181412973094608,E. Coli,E. Coli
+iWFL_1372.sbml,TF applied,0.9824784386660056,1.0,4.0,244.0,0.0,0.4181414811638037,E. Coli,E. Coli
+iYS854.sbml,TF applied,10.881799895902263,1.0,15.0,184.0,18.0,0.0,Staphylococcus aureus,Gram-positive bacteria
+iMM1415.sbml,TF applied,1.3634279056507903,0.0,3.0,1204.0,0.0,0.0,Mus musculus,Mammals
+iIS312.sbml,TF applied,50.678072611542426,0.0,3.0,108.0,0.0,6.690216526509171,Trypanosoma cruzi,Flagellates
+iBWG_1329.sbml,TF applied,0.9866163806119208,0.0,4.0,233.0,0.0,0.4181412513518976,E. Coli,E. Coli
+iEC1372_W3110.sbml,TF applied,0.9876547220244254,0.0,4.0,269.0,0.0,0.4180184499033095,E. Coli,E. Coli
+iEcDH1_1363.sbml,TF applied,0.982478438666005,0.0,4.0,233.0,0.0,0.4181412512767452,E. Coli,E. Coli
+iML1515.sbml,TF applied,0.8769972144269698,0.0,4.0,216.0,0.0,0.2849321948644295,E. Coli,E. Coli
+iECSE_1348.sbml,TF applied,0.9824784386660032,1.0,4.0,236.0,0.0,0.4181412512767407,E. Coli,E. Coli
+iAM_Pv461.sbml,TF applied,0.6871751707722251,0.0,3.0,106.0,0.0,0.0,Plasmodium vivax,Protists
+iECO26_1355.sbml,TF applied,0.9824784386660068,1.0,4.0,245.0,0.0,0.4181412512767447,E. Coli,E. Coli
+iECDH10B_1368.sbml,TF applied,1.040443695401864,0.0,4.0,234.0,0.0,0.4246959657824944,E. Coli,E. Coli
+iECO111_1330.sbml,TF applied,0.9824784386660038,1.0,4.0,244.0,0.0,0.418138952436846,E. Coli,E. Coli
+iAF692.sbml,TF applied,0.0267804428014667,0.0,3.0,81.0,0.0,0.0,Methanosarcina barkeri,Archaea
+iAM_Pk459.sbml,TF applied,0.6871751707722248,0.0,3.0,106.0,0.0,0.0,Plasmodium knowlesi,Protists
+iAF1260b.sbml,TF applied,0.7367009388648792,0.0,3.0,170.0,0.0,0.2495697843644669,E. Coli,E. Coli
+iNRG857_1313.sbml,TF applied,0.9824784386660066,1.0,4.0,243.0,0.0,0.4181412512767452,E. Coli,E. Coli
+iLB1027_lipid.sbml,Not loaded,,,,,,,Phaeodactylum tricornutum,Protists
+iAF1260.sbml,TF applied,0.7367009388648831,0.0,3.0,170.0,0.0,0.2500191714898368,E. Coli,E. Coli
+iNF517.sbml,TF applied,0.0426346054433732,0.0,4.0,78.0,0.0,0.0,Lactococcus lactis,Gram-positive bacteria
+iAT_PLT_636.sbml,TF applied,0.0,0.0,2.0,326.0,1.0,0.0,Mammals,Mammals
+iECS88_1305.sbml,TF applied,0.9824784386660071,1.0,4.0,244.0,0.0,0.4181387840485574,E. Coli,E. Coli
+iSDY_1059.sbml,TF applied,0.9378903140618774,0.0,4.0,233.0,0.0,0.4244774289281943,Shigella dysenteriae,Gram-negative bacteria
+iJN746.sbml,TF applied,1.4,0.0,3.0,54.0,0.0,0.0,Pseudomonas putida,Gram-negative bacteria
+iB21_1397.sbml,TF applied,0.9756145115851272,0.0,4.0,239.0,0.0,0.4181396333411273,E. Coli,E. Coli
+iSSON_1240.sbml,TF applied,0.9826450753011974,0.0,4.0,240.0,0.0,0.4180132216126249,Shigella sonnei,Gram-negative bacteria
+iSbBS512_1146.sbml,TF applied,0.9828118163906604,0.0,4.0,222.0,0.0,0.4182203524386598,Shigella boydii,Gram-negative bacteria
+ic_1306.sbml,TF applied,1.031922280112682,1.0,4.0,242.0,0.0,0.4325573824033255,E. Coli,E. Coli
+iAM_Pc455.sbml,TF applied,0.6587010614860829,0.0,3.0,105.0,0.0,0.0,Plasmodium cynomolgi,Protists
+iAPECO1_1312.sbml,TF applied,0.9824784386660068,1.0,4.0,243.0,0.0,0.4181412512767463,E. Coli,E. Coli
+iECIAI1_1343.sbml,TF applied,20.522225629794125,1.0,4.0,530.0,0.0,4.351405462398243,E. Coli,E. Coli
+iECB_1328.sbml,TF applied,0.9824784386660071,0.0,4.0,237.0,0.0,0.414520745758327,E. Coli,E. Coli
+iJR904.sbml,TF applied,0.9219480950504684,0.0,3.0,30.0,0.0,0.0,E. Coli,E. Coli
+iSBO_1134.sbml,TF applied,0.3998801249453398,0.0,4.0,231.0,0.0,0.418050587116032,Shigella boydii,Gram-negative bacteria
+iUTI89_1310.sbml,TF applied,0.982478438666006,1.0,4.0,244.0,0.0,0.0,E. Coli,E. Coli
