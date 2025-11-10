@@ -7,7 +7,7 @@ cc = ComponentContribution()
 
 eps = 1e-5
 
-class TestModel:
+class TestDrgTools:
     
     @pytest.mark.usefixtures("tmodel")  # Use the default model
     def test_get_compound(self, tmodel):
