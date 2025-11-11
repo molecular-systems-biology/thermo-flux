@@ -67,7 +67,8 @@ class ThermoModel(Model):
         split_biomass=True,
         update_biomass_dfG0=False,
         add_charge_exchange=True,
-        phi_dict :Dict[str,Q_] = None,
+        phi_dict: Dict[str,Q_] = None,
+        compartment_parents: Dict[str, str] = None,
         **kwargs):
 
         Model.__init__(self)
@@ -87,6 +88,12 @@ class ThermoModel(Model):
         self._max_drG = max_drG
         self._phi_dict = phi_dict
         self._biomass_rxn=False
+
+        self._compartment_parents = self.compartment_parents_dict(self) #point special dict class to this model instance
+        if compartment_parents:
+            self._compartment_parents.update(compartment_parents)
+
+        self._inner_compartments = None
         
         for attr, value in model.__dict__.items():
             if attr not in ['metabolites', 'genes', 'reactions']:
@@ -583,6 +590,122 @@ class ThermoModel(Model):
     def T(self, value):
         self._T = value
 
+
+   #add property and setter for compartment parents
+    class compartment_parents_dict(dict):
+        """A dict subclass to represent compartment parents with custom string representation."""
+
+        def __init__(self, model):
+            super().__init__()
+            self.model = model
+            
+        def __setitem__(self, key, value):
+            super().__setitem__(key, value)
+            self.model._inner_compartments = None  # Reset inner compartments whenever the compartment parents dict is updated
+
+    @property
+    def compartment_parents(self):
+        #if empty or none populate with default values
+        if self._compartment_parents is None or len(self._compartment_parents) == 0:
+            self._compartment_parents = self.compartment_parents_dict(self)
+
+            comps = list(self.compartments.keys())
+            if 'e' in comps and 'c' in comps:
+                #assume 'c' is cytosol and 'e' is extracellular. 
+                #assume all other compartments are inside the cytosol
+                for comp in comps:
+                    if comp != 'e':
+                        self._compartment_parents[comp] = 'e' if comp == 'c' else 'c'
+                self._compartment_parents['e'] = None
+
+            else:
+                for comp in comps:
+                    self._compartment_parents[comp] = None
+
+        return self._compartment_parents 
+
+    @compartment_parents.setter
+    def compartment_parents(self, value):
+
+        #if value is a dict
+        if isinstance(value, dict):
+
+            #check all keys and values are in compartments
+            for comp in value.keys():
+                if comp not in self.compartments:
+                    raise ValueError("Compartment {} in compartment_parents is not in model compartments.".format(comp))
+                parent = value[comp]
+                if parent is not None:
+                    if parent not in self.compartments:
+                        raise ValueError("Parent compartment {} for compartment {} in compartment_parents is not in model compartments.".format(parent, comp))
+
+            #check every compartment has a parent 
+            for comp in self.compartments.keys():
+                if comp not in value:
+                    raise ValueError("Compartment {} is missing from compartment_parents.".format(comp))
+
+
+            #use special compartment_parents_dict class
+            self._compartment_parents = self.compartment_parents_dict(self)
+            self._compartment_parents.update(value)
+
+        else:
+            self._compartment_parents = None
+            
+        #reset the inner compartments so it is re-populated with any new values
+        self._inner_compartments = None
+
+    @property
+    def inner_compartments(self):
+
+        #first run to populate the inner compartments dict
+        if self.compartment_parents is None:
+            #run compartment parents property to populate it
+            _ = self.compartment_parents
+            
+        if self._inner_compartments is None:
+
+            def ancestor_set(c):
+                s = set()
+                while c in self._compartment_parents:
+                    c = self._compartment_parents[c]
+                    s.add(c)
+                return s
+
+            comps = list(self.compartments.keys())
+
+            anc = {comp: ancestor_set(comp) for comp in comps}
+
+            n = len(comps)
+
+            # inner_matrix[i][j] = inner compartment among (comps[i], comps[j]) or None if unrelated
+            inner_matrix = [[None] * n for _ in range(n)]
+            for i, a in enumerate(comps):
+                for j, b in enumerate(comps):
+                    if a == b:
+                        inner_matrix[i][j] = a
+                    elif a in anc[b]:
+                        inner_matrix[i][j] = b
+                    elif b in anc[a]:
+                        inner_matrix[i][j] = a
+
+            # Convenient lookup using tuples (both orders covered by the matrix fill)
+            inner_lookup = {}
+            for i, a in enumerate(comps):
+                for j, b in enumerate(comps):
+                    val = inner_matrix[i][j]
+                    if val is not None:
+                        inner_lookup[(a, b)] = val
+                    else:
+                        inner_lookup[(a, b)] = None
+
+            self._inner_compartments = inner_lookup
+
+            return inner_lookup
+
+        else:
+            return self._inner_compartments
+ 
     @property
     def phi(self):
         if self._phi is None:
