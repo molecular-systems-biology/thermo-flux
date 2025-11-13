@@ -67,6 +67,21 @@ class TestModel:
         mg_dict = tmodel.mg_dict
         assert len(mg_dict) == len(tmodel.compartments)
 
+    #test compartment parents functionality
+    @pytest.mark.usefixtures("tmodel")
+    def test_compartment_parents(self, tmodel):
+        #check default compartment parent keys match compartments
+        for comp in tmodel.compartments:
+            assert comp in tmodel.compartment_parents.keys()
+
+        #test setting compartment parents
+        tmodel.compartment_parents['m'] = 'c'
+        assert tmodel.compartment_parents['m'] == 'c'
+        #check that inner compartments are reset
+        assert tmodel._inner_compartments is None
+        #check that inner compartments are calculated correctly
+        assert tmodel.inner_compartments[('c','m')] == 'm'
+
 
 class TestExcelModel:
 

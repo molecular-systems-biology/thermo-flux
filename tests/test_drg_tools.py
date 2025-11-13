@@ -67,6 +67,14 @@ class TestDrgTools:
         h_c = drg_tools.transported_c_h(tmodel.reactions.get_by_id("PYRt-1"))
         assert h_c == (3.0, -1.0, -3.0, 1.0, 'c', 'e', True)
 
+    #test inner compartment detection
+    def test_inner_compartment_detection(self, tmodel):
+        rxn = tmodel.reactions.get_by_id("PYRt-1")
+        inner_comp, outer_comp = drg_tools._transport_direction(rxn)
+        assert inner_comp == 'c'
+        assert outer_comp == 'e'
+        assert rxn.inner_compartment == 'c'
+
     @pytest.mark.usefixtures("tmodel")  # Use the default model
     def test_drG_transport(self, tmodel):
         drG_transport, drg_h, drg_c = drg_tools.calc_drGtransport(tmodel.reactions.get_by_id("PYRt-1"))
