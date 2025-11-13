@@ -962,44 +962,25 @@ def _transport_direction(reaction):
     Useful for consistently defining the major microspecies that is transported considering the conditions 
     of the inner compartment"""
 
-    phi_dict = reaction.model.phi_dict
+    compartments = tuple(reaction.compartments)
 
-    #reaction = reaction.copy()
+    inner_comp = reaction.inner_compartment
 
-    compartments = list(reaction.compartments)
+    outer_comp = None
 
-    if len(compartments)>1:
-        inner_comp = reaction.reactants[0].compartment 
-        compartments.remove(inner_comp)
-        outer_comp = compartments[0]
-    else:
-        inner_comp = compartments[0]
-        outer_comp = compartments[0]
+    if len(compartments) == 2:
+        a, b = compartments
+        outer_comp = a if b == inner_comp else b
 
-    # Convention for membrane potentials being V_inside - V_outside
-    # potential is generally higher outside so if potential is -'ve then inner and outer are correct 
-    # if potential is +'ve then inner and outer should be swapped 
-    e_potential_difference = phi_dict[inner_comp][outer_comp]
-    swapped = 1
-    if e_potential_difference < 0:
-        inner_comp_temp = inner_comp
-        inner_comp = outer_comp
-        outer_comp = inner_comp_temp
+    elif len(compartments) > 2:
+        #reactions with more than two compartments - find the innermost compartment
+        for comp in compartments:
+            if all(comp not in tmodel.inner_compartments.get((other_comp, comp), []) for other_comp in compartments if other_comp != comp):
+                outer_comp = comp
+        
 
-        e_potential_difference = phi_dict[inner_comp][outer_comp]
-        metabolites = reaction.metabolites
-        swapped = {}
-        for met, stoich in metabolites.items():
-            swapped[met] = stoich*-1
-            
-        #reaction.add_metabolites(swapped)
-        #reaction.add_metabolites(swapped)
-        swapped = -1
+    return inner_comp, outer_comp
 
-    if len(reaction.compartments) == 1:
-        outer_comp = None
-
-    return reaction, swapped, inner_comp, outer_comp
 
 #separate reaction into inner and outer half reactions 
 def comp_split(reaction, compartment):
@@ -1011,10 +992,9 @@ def comp_split(reaction, compartment):
 
 
 def transported_c_h(reaction, round_dp = False, verbose=False, rxn_already_balanced = True):
-    reaction_swapped, swapped, inner_comp, outer_comp = _transport_direction(reaction)
+    inner_comp, outer_comp = _transport_direction(reaction)
     transported_mets = calc_transported_mets(reaction)
     
-
     #define compartment conditions
     pMg = Q_(14,'') #for transported mets set low Mg conc as we assume Mg is not transported 
     pH_inner = reaction.model.pH[inner_comp]
@@ -1155,7 +1135,7 @@ def calc_transported_mets(reaction):
     if len(reaction.compartments) != 2:
         return {}
     
-    reaction_swapped, swapped, inner_comp, outer_comp = _transport_direction(reaction)
+    inner_comp, outer_comp = _transport_direction(reaction)
 
     inner_mets = comp_split(reaction,inner_comp)
     outer_mets = comp_split(reaction,outer_comp)
@@ -1223,10 +1203,6 @@ def calc_drGtransport(reaction, round_dp = False, rxn_already_balanced=True):
             reaction.add_metabolites(proton_stoich)
             reaction.add_metabolites(charge_stoich)
             transported_protons, transported_charge,outer_h,outer_z,inner_comp, outer_comp, balanced = transported_c_h(reaction, round_dp = round_dp,rxn_already_balanced=False)
-
-
-
-        #reaction_swapped, swapped, inner_comp, outer_comp = _transport_direction(reaction)
 
         pH_inner = reaction.model.pH[inner_comp]
         pH_outer = reaction.model.pH[outer_comp]
@@ -1301,7 +1277,7 @@ def net_elements(reaction, balance_mg = True, round_dp=False, rxn_already_balanc
                     break
                 
 
-        reaction_swapped, swapped, inner_comp, outer_comp = _transport_direction(reaction)
+        inner_comp, outer_comp = _transport_direction(reaction)
         transported_mets = calc_transported_mets(reaction)
 
         # define compartment conditions

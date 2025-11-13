@@ -1,97 +1,89 @@
-import unittest
+import pytest
 from cobra.io import read_sbml_model
 from thermo_flux.core.model import ThermoModel
 from thermo_flux.io import load_excel as ex
 from equilibrator_api import Q_
 
 
-class TestModel(unittest.TestCase):
+class TestModel:
 
-    maxDiff = None
+    @pytest.mark.usefixtures("tmodel")
+    def test_get_rxn(self, tmodel):
+        rxn = tmodel.reactions[0]
+        assert rxn.id == 'ASNS1'
 
-    @classmethod
-    def setUpClass(cls):
+    @pytest.mark.usefixtures("tmodel")
+    def test_model_thermo_params(self, tmodel):
+        assert hasattr(tmodel, "pH")
+        assert hasattr(tmodel, "I")
+        assert hasattr(tmodel, "pMg")
+        assert hasattr(tmodel, "T")
+        assert hasattr(tmodel, "phi")
+        assert hasattr(tmodel, "gdiss_lim")
 
-        cls.model = read_sbml_model('yeast_test.xml')
-        cls.tmodel = ThermoModel(cls.model,
-                                 pH={'c': Q_(7),
-                                     'm': Q_(7.4),
-                                     'e': Q_(5)},
-                                 I={'c': Q_(0.25, 'M'),
-                                    'm': Q_(0.25, 'M'),
-                                    'e': Q_(0.25, 'M')},
-                                 T=Q_(303.15, 'K'),
-                                 pMg={'c': Q_(3), 'm': Q_(3), 'e': Q_(3)},
-                                 phi={'ec': Q_(-0.06, 'V'),
-                                      'cm': Q_(-0.16, 'V')},
-                                 update_thermo_info=False)
+    @pytest.mark.usefixtures("tmodel")
+    def test_phi_dict(self, tmodel):
+        phi_dict = tmodel.phi_dict
+        test_phi_dict = {'c': {'c': Q_(0, 'V'), 'm': Q_(-0.16, 'V'), 'e': Q_(0.06, 'V')},
+                         'm': {'c': Q_(0.16, 'V'), 'm': Q_(0, 'V'), 'e': Q_(0, 'V')},
+                         'e': {'c': Q_(-0.06, 'V'), 'm': Q_(0, 'V'), 'e': Q_(0, 'V')}}
 
-    def test_get_rxn(self):
-        rxn = (self.tmodel.reactions[0])
-        self.assertEqual(rxn.id, 'ASNS1')
+        assert phi_dict == test_phi_dict
 
-        return 
+    @pytest.mark.usefixtures("tmodel")
+    def test_rxn_thermo_params(self, tmodel):
+        for rxn in tmodel.reactions:
+            assert hasattr(rxn, "drG0")
+            assert hasattr(rxn, "drG0prime")
+            assert hasattr(rxn, "drGtransport")
+            assert hasattr(rxn, "drGtransform")
+            assert hasattr(rxn, "drG_h_transport")
+            assert hasattr(rxn, "drG_c_transport")
+            assert hasattr(rxn, "drG")
+            assert hasattr(rxn, "drG_SE")
 
-    def test_model_thermo_params(self):
-        self.assertTrue(hasattr(self.tmodel, "pH"))
-        self.assertTrue(hasattr(self.tmodel, "I"))
-        self.assertTrue(hasattr(self.tmodel, "pMg"))
-        self.assertTrue(hasattr(self.tmodel, "T"))
-        self.assertTrue(hasattr(self.tmodel, "phi"))
-        self.assertTrue(hasattr(self.tmodel, "gdiss_lim"))
-        
-        return
+    @pytest.mark.usefixtures("tmodel")
+    def test_met_thermo_params(self, tmodel):
+        for met in tmodel.metabolites:
+            assert hasattr(met, "upper_bound")
+            assert hasattr(met, "lower_bound")
+            assert hasattr(met, "concentration")
+            assert hasattr(met, "accession")
+            assert hasattr(met, "dfG0")
+            assert hasattr(met, "dfG0prime")
 
-    def test_phi_dict(self):
-        phi_dict = self.tmodel.phi_dict
-        test_phi_dict = {'c': {'c': Q_(0,'V'), 'm': Q_(-0.16,'V'), 'e': Q_(0.06,'V')},
-                         'm': {'c': Q_(0.16,'V'), 'm': Q_(0,'V'), 'e': Q_(0,'V')},
-                         'e': {'c': Q_(-0.06,'V'), 'm': Q_(0,'V'), 'e': Q_(0,'V')}}
+    @pytest.mark.usefixtures("tmodel")
+    def test_proton_dict(self, tmodel):
+        proton_dict = tmodel.proton_dict
+        assert len(proton_dict) == len(tmodel.compartments)
 
-        self.assertEqual(phi_dict, test_phi_dict)
-        return
+    @pytest.mark.usefixtures("tmodel")
+    def test_charge_dict(self, tmodel):
+        charge_dict = tmodel.charge_dict
+        assert len(charge_dict) == len(tmodel.compartments)
 
-    def test_rxn_thermo_params(self):
-        for rxn in self.tmodel.reactions:
-            self.assertTrue(hasattr(rxn, "drG0"))
-            self.assertTrue(hasattr(rxn, "drG0prime"))
-            self.assertTrue(hasattr(rxn, "drGtransport"))
-            self.assertTrue(hasattr(rxn, "drGtransform"))
-            self.assertTrue(hasattr(rxn, "drG_h_transport"))
-            self.assertTrue(hasattr(rxn, "drG_c_transport"))
-            self.assertTrue(hasattr(rxn, "drG"))
-            self.assertTrue(hasattr(rxn, "drG_SE"))          
+    @pytest.mark.usefixtures("tmodel")
+    def test_mg_dict(self, tmodel):
+        mg_dict = tmodel.mg_dict
+        assert len(mg_dict) == len(tmodel.compartments)
 
-        return 
+    #test compartment parents functionality
+    @pytest.mark.usefixtures("tmodel")
+    def test_compartment_parents(self, tmodel):
+        #check default compartment parent keys match compartments
+        for comp in tmodel.compartments:
+            assert comp in tmodel.compartment_parents.keys()
 
-    def test_met_thermo_params(self):
-        for met in self.tmodel.metabolites:
-            self.assertTrue(hasattr(met, "upper_bound"))
-            self.assertTrue(hasattr(met, "lower_bound"))
-            self.assertTrue(hasattr(met, "concentration"))
-            self.assertTrue(hasattr(met, "accession"))
-            self.assertTrue(hasattr(met, "dfG0"))
-            self.assertTrue(hasattr(met, "dfG0prime"))       
-
-        return 
-
-    def test_proton_dict(self):
-        proton_dict = self.tmodel.proton_dict
-        self.assertEqual(len(proton_dict), len(self.tmodel.compartments))
-        return
-
-    def test_charge_dict(self):
-        charge_dict = self.tmodel.charge_dict
-        self.assertEqual(len(charge_dict), len(self.tmodel.compartments))
-        return
-
-    def test_mg_dict(self):
-        mg_dict = self.tmodel.mg_dict
-        self.assertEqual(len(mg_dict), len(self.tmodel.compartments))
-        return
+        #test setting compartment parents
+        tmodel.compartment_parents['m'] = 'c'
+        assert tmodel.compartment_parents['m'] == 'c'
+        #check that inner compartments are reset
+        assert tmodel._inner_compartments is None
+        #check that inner compartments are calculated correctly
+        assert tmodel.inner_compartments[('c','m')] == 'm'
 
 
-class TestExcelModel(unittest.TestCase):
+class TestExcelModel:
 
     @classmethod
     def setUpClass(cls):

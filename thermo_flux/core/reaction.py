@@ -376,3 +376,29 @@ class ThermoReaction(Reaction):
         #we balance the sub reactions and the modified initial reaction
         #then we add the balanced sub reactions to the modified initial reaction
         return list_sub_rxn
+
+
+    @property
+    def inner_compartment(self):
+        """Return the inner compartment of a transport reaction"""
+              
+        compartments = tuple(self.compartments)
+
+        #non transport reactions
+        if len(compartments) == 1:
+            return compartments[0]
+
+        #transport reactions
+        elif len(compartments) == 2:
+            return self.model.inner_compartments[compartments]
+            
+        #reactions with more than two compartments - find the innermost compartment
+        else:
+            for comp in compartments:
+                if all(comp in self.model.inner_compartments.get((other_comp, comp), []) for other_comp in compartments if other_comp != comp):
+                    inner_comp = comp
+                    return inner_comp
+            
+
+
+  
