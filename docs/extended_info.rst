@@ -75,6 +75,11 @@ Local cache to access eQuilibrator compounds
 --------------------------------------------
 When ``Thermo-Flux`` queries an eQuilibrator compound for the first time, eQuilibrator will require downloading the latest up-to-date database of eQuilibrator compounds. This local cache is named ``compound.sqlite`` and integrates native functions to retrieve compounds or manually add compounds (see `eQuilibrator local cache <https://equilibrator.readthedocs.io/en/latest/local_cache.html>`_).
 
+Balancing reactions when metabolites don’t have an eQuilibrator formula
+-----------------------------------------------------------------------
+When an equilibrator compound is not found for one of the metabolites in a reaction, the initial model formula is used for all metabolites. This avoids reactions being considered as unbalanced because of a lack of coherence. 
+
+
 Step 3: Calculation of Gibbs formation energies
 ***********************************************
 
