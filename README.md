@@ -1,16 +1,13 @@
-# thermo_flux
-Tools for thermodynamically constrained FBA [[1](#references)]
+# Thermo-Flux
+Tools for flux balance anlysis with thermodynamic constraints. 
 
-Full documentation on ReadTheDocs (https://thermo-flux.readthedocs.io/en/latest/)
+Full documentation on ReadTheDocs (https://thermo-flux.readthedocs.io/en/latest/) and accompanying protocol at [doi:10.1101/2025.11.20.689566](https://doi.org/10.1101/2025.11.20.689566).
 
 ## Installation
 
 Requirements
 - Python >= 3.11
 - [Gurobi 11.0](https://support.gurobi.com/hc/en-us/articles/360044290292-How-do-I-install-Gurobi-for-Python-)
-
-
-### Installation on windows 
 	
 1. To avoid dependency conflicts it is reccomended to use a python environment e.g:
 
@@ -20,7 +17,7 @@ Requirements
 
 2. Now thermo_flux can be safely installed. Clone the thermo_flux repository and navigate to the thermo_flux directory:
   
-	```git clone https://github.com/tednsmith/thermo_flux.git```
+	```git clone https://github.com/molecular-systems-biology/thermo-flux```
 
 	```cd thermo_flux```
 
@@ -32,16 +29,19 @@ Requirements
 
 	```conda install -c gurobi gurobi```
 	
-
 ## Examples 
 
 Example usage notebooks can be found in the examples directory. 
 
+## Cite us
 
-## References 
-1. Niebel B, Leupold S, Heinemann M. An upper limit on Gibbs energy dissipation governs cellular metabolism. Nat Metab. 2019 Jan;1(1):125-132. doi: 10.1038/s42255-018-0006-7. Epub 2019 Jan 7. PMID: 32694810.
+If you use Thermo-Flux please cite our protocol paper at: 
 
-2. M.E. Beber, M.G. Gollub, D. Mozaffari, K.M. Shebek, A.I. Flamholz, R. Milo, E. Noor (2021) eQuilibrator 3.0: a database solution for thermodynamic constant estimation Nucleic Acids Research [DOI: 10.1093/nar/gkab1106]
+Smith EN, Fargier N, Pedro J & Heinemann M (2025) *Thermo-Flux: generation and analysis of comprehensive thermodynamic-stoichiometric metabolic network models.* 2025.11.20.689566 [doi:10.1101/2025.11.20.689566](https://doi.org/10.1101/2025.11.20.689566) [PREPRINT]
+  
+Thermo-Flux relies on eQuilibrator for underlying thermodynamic calculations so please also cite the eQuilibrator database: 
+
+M. E. Beber, M. G. Gollub, D. Mozaffari, K. M. Shebek, A. I. Flamholz, R. Milo, and E. Noor, *eQuilibrator 3.0: a database solution for thermodynamic constant estimation* Nucleic Acids Research (2021), [DOI:10.1093/nar/gkab1106](http://dx.doi.org/10.1093/nar/gkab1106)
 
 ## Acknowledgments
-Thanks to Moritz Beber, Elad Noor and Mattia Gollub for helpful discussions and advice. 
+Thanks to Yusuke Himeoka, Moritz Beber, Elad Noor and Mattia Gollub for helpful discussions and advice. 
