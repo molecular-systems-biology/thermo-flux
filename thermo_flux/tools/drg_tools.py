@@ -3,6 +3,7 @@
 #from equilibrator_assets.generate_compound import create_compound, get_or_create_compound
 
 from functools import reduce
+from typing import Optional, List, Dict, Tuple, Union, Any, Set
 import pandas as pd
 import numpy as np
 import numpy.linalg as la
@@ -36,8 +37,20 @@ from equilibrator_api import Reaction
 
 
 #ToDo set up install of equilibrator assests
-def new_eq_metabolite(met):
-    """function to add a new metabolite to the local eq database if it does not already exist"""
+def new_eq_metabolite(met: Any) -> Optional[eQ_compound]:
+    """
+    Add a new metabolite to the local equilibrator database if it does not already exist.
+
+    Parameters
+    ----------
+    met : ThermoMetabolite
+        The metabolite object to add.
+
+    Returns
+    -------
+    Optional[eQ_compound]
+        The equilibrator compound object if found or created, else None.
+    """
     met_string = None
     mol_format = None
 
@@ -68,7 +81,29 @@ def new_eq_metabolite(met):
 
         return cpd
 
-def get_suitable_ids(met, search = False, update_annotations = False ):
+def get_suitable_ids(met: Any, search: bool = False, update_annotations: bool = False) -> Tuple[Optional[eQ_compound], Dict, Optional[str], Optional[str], bool]:
+    """
+    Find suitable identifiers for a metabolite in the equilibrator database.
+
+    Parameters
+    ----------
+    met : ThermoMetabolite
+        The metabolite to search for.
+    search : bool, optional
+        Whether to perform a broader search using common names (default is False).
+    update_annotations : bool, optional
+        Whether to update the metabolite's annotations with found identifiers (default is False). Warning update_annotations can be slow to extract all annotations from eQuilibrator
+
+    Returns
+    -------
+    Tuple[Optional[eQ_compound], Dict, Optional[str], Optional[str], bool]
+        A tuple containing:
+        - The equilibrator compound object (or None).
+        - A dictionary of annotations.
+        - The chemical formula (or None).
+        - The InChI string (or None).
+        - A boolean indicating if a search was performed.
+    """
     found = False
     cpd = None
     formula = None
@@ -178,8 +213,20 @@ def get_suitable_ids(met, search = False, update_annotations = False ):
 
     return cpd, annotation, formula, inchi, searched
 
-def get_compound(met):
-    """takes an identifier string, thermo metabolite or equilibrator compound and returns an equilibrator compound"""
+def get_compound(met: Union[str, eQ_compound, Any]) -> Optional[eQ_compound]:
+    """
+    Retrieve an equilibrator compound from an identifier string, ThermoMetabolite, or eQ_compound.
+
+    Parameters
+    ----------
+    met : Union[str, eQ_compound, ThermoMetabolite]
+        The input identifier or object.
+
+    Returns
+    -------
+    Optional[eQ_compound]
+        The corresponding equilibrator compound object, or None if not found.
+    """
     cpd = None
     if type(met) == eQ_compound:
         cpd = met
@@ -196,7 +243,22 @@ def get_compound(met):
 
     return cpd
 
-def round_and_normalize(numbers, round_dp=2):
+def round_and_normalize(numbers: Union[List[float], np.ndarray], round_dp: int = 2) -> List[float]:
+    """
+    Round a list of numbers to a specified decimal place and normalize them so they sum to 1.
+
+    Parameters
+    ----------
+    numbers : Union[List[float], np.ndarray]
+        The numbers to round and normalize.
+    round_dp : int, optional
+        The number of decimal places to round to (default is 2).
+
+    Returns
+    -------
+    List[float]
+        The rounded and normalized numbers.
+    """
     numbers_rounded = np.round(numbers, round_dp)
     sum_rounded = sum(numbers_rounded)
     if sum_rounded < 1:
@@ -209,11 +271,38 @@ def round_and_normalize(numbers, round_dp=2):
     z = [num / sum(numbers_rounded) for num in numbers_rounded]
     return z
 
-def calc_average_charge_protons(compound, pH, pMg, ionic_strength, temperature, accuracy=0.1, round_dp=False,cobra_formula=False):
+def calc_average_charge_protons(compound: Any, pH: Any, pMg: Any, ionic_strength: Any, temperature: Any, accuracy: float = 0.1, round_dp: Union[bool, int] = False, cobra_formula: bool = False) -> Tuple[Optional[float], Optional[float], Optional[float], Optional[pd.DataFrame]]:
     """
-    Modified from Elad Noor
-    Function for calculating microspecies distribution of metabolites
-    Microspcies below a certain theshold can be ignored by changing the accuracy. i.e accuracy = 0.1 only considers micorspecies >10% of population 
+    Calculate the average charge, protons, and magnesiums for a compound under specific conditions.
+    Modified from Elad Noor.
+
+    Parameters
+    ----------
+    compound : ThermoMetabolite or eQ_compound
+        The compound to analyze.
+    pH : Quantity
+        The pH of the environment.
+    pMg : Quantity
+        The pMg of the environment.
+    ionic_strength : Quantity
+        The ionic strength of the environment.
+    temperature : Quantity
+        The temperature of the environment.
+    accuracy : float, optional
+        The threshold for microspecies abundance to be considered (default is 0.1).
+    round_dp : Union[bool, int], optional
+        The number of decimal places to round to, or False to skip rounding (default is False).
+    cobra_formula : bool, optional
+        Whether to force using the COBRA model formula (default is False).
+
+    Returns
+    -------
+    Tuple[Optional[float], Optional[float], Optional[float], Optional[pd.DataFrame]]
+        A tuple containing:
+        - Average charge.
+        - Average number of protons.
+        - Average number of magnesium atoms.
+        - DataFrame of microspecies distribution.
     """
     cpd = get_compound(compound)
     data = []
@@ -344,8 +433,33 @@ def calc_average_charge_protons(compound, pH, pMg, ionic_strength, temperature, 
 
     return average_charge, average_protons, average_Mg, microspecies_df
 
-def major_microspecies(met, pH, pMg, ionic_strength_M, T_in_K ,cobra_formula=False):
-    """Calculates the major microspecies of a compound. Useful for transporter calculations"""
+def major_microspecies(met: Any, pH: Any, pMg: Any, ionic_strength_M: Any, T_in_K: Any, cobra_formula: bool = False) -> Tuple[Optional[float], Optional[float], Optional[float]]:
+    """
+    Calculate the major microspecies of a compound. Useful for transporter calculations.
+
+    Parameters
+    ----------
+    met : ThermoMetabolite or eQ_compound
+        The metabolite to analyze.
+    pH : Quantity
+        The pH of the environment.
+    pMg : Quantity
+        The pMg of the environment.
+    ionic_strength_M : Quantity
+        The ionic strength in Molar.
+    T_in_K : Quantity
+        The temperature in Kelvin.
+    cobra_formula : bool, optional
+        Whether to force using the COBRA model formula (default is False).
+
+    Returns
+    -------
+    Tuple[Optional[float], Optional[float], Optional[float]]
+        A tuple containing:
+        - Charge of the major microspecies.
+        - Number of protons in the major microspecies.
+        - Number of magnesium atoms in the major microspecies.
+    """
 
     cpd = get_compound(met)
 
@@ -384,18 +498,30 @@ def major_microspecies(met, pH, pMg, ionic_strength_M, T_in_K ,cobra_formula=Fal
         Mg = ms.number_magnesiums 
     return charge, protons, Mg 
 
-def pka_graph(metabolite, pMg = None, ionic_strength = None, temperature = None, accuracy=0, round_dp=False):
-    '''returns a dataframe of the charge distribution of a metabolite at different pHs
+def pka_graph(metabolite: Any, pMg: Optional[Any] = None, ionic_strength: Optional[Any] = None, temperature: Optional[Any] = None, accuracy: float = 0, round_dp: Union[bool, int] = False) -> pd.DataFrame:
+    """
+    Return a dataframe of the charge distribution of a metabolite at different pHs.
+
     Parameters
     ----------
-    metabolite: cobra metabolite object
-    pMg: float or pint quantity
-    ionic_strength: pint quantity
+    metabolite : ThermoMetabolite
+        The metabolite object.
+    pMg : float or Quantity, optional
+        The pMg value (default is None, uses model default).
+    ionic_strength : Quantity, optional
+        The ionic strength (default is None, uses model default).
+    temperature : Quantity, optional
+        The temperature (default is None, uses model default).
+    accuracy : float, optional
+        The accuracy threshold for microspecies (default is 0).
+    round_dp : Union[bool, int], optional
+        Decimal places for rounding (default is False).
 
     Returns
     -------
-    dataframe with pH as index and charge as columns
-    '''
+    pd.DataFrame
+        Dataframe with pH as index and charge as columns.
+    """
   
     if pMg is None:
         pMg = metabolite.model.pMg[metabolite.compartment]
@@ -427,7 +553,25 @@ def pka_graph(metabolite, pMg = None, ionic_strength = None, temperature = None,
 
     return df
 
-def calc_dfG0(tmodel, fit_unknown_dfG0=False):
+def calc_dfG0(tmodel: Any, fit_unknown_dfG0: bool = False) -> Tuple[Any, Any, Any]:
+    """
+    Calculate the standard Gibbs energy of formation (dfG0) for metabolites in the model.
+
+    Parameters
+    ----------
+    tmodel : ThermoModel
+        The thermodynamic model containing metabolites.
+    fit_unknown_dfG0 : bool, optional
+        Whether to fit unknown dfG0 values (default is False).
+
+    Returns
+    -------
+    Tuple[Quantity, Quantity, Quantity]
+        A tuple containing:
+        - Mean dfG0 values.
+        - Square root of the covariance matrix of dfG0.
+        - Basis for unknown metabolites.
+    """
     default_dfg0_std = tmodel.rmse_inf
 
     known_met_idx = []
@@ -539,7 +683,24 @@ def calc_dfG0(tmodel, fit_unknown_dfG0=False):
 
     return dfG0_mean, dfG0_cov_sqrt, unknowns_basis
 
-def _fit_unknown_dfG(S, unknowns_basis, dfG0_prime):
+def _fit_unknown_dfG(S: np.ndarray, unknowns_basis: Any, dfG0_prime: Any) -> Any:
+    """
+    Fit unknown dfG values to minimize the effect on drG estimation.
+
+    Parameters
+    ----------
+    S : np.ndarray
+        Stoichiometric matrix.
+    unknowns_basis : Quantity
+        Basis for unknown metabolites.
+    dfG0_prime : Quantity
+        Standard transformed Gibbs energy of formation.
+
+    Returns
+    -------
+    Quantity
+        Shift in dfG for unknown metabolites.
+    """
     X = S.T @ unknowns_basis.m  # this is unknown part of formation energies 
     y = -S.T @ dfG0_prime.m_as("kJ/mol")  # these are drG0prime
 
@@ -548,8 +709,20 @@ def _fit_unknown_dfG(S, unknowns_basis, dfG0_prime):
     return Q_(unknowns_basis @ beta, "kJ/mol")
 
 
-def calc_dfG_transform(met):
-    #calucalte transform required for every metabolite based on model compartment information 
+def calc_dfG_transform(met: Any) -> Any:
+    """
+    Calculate the Legendre transform for a metabolite based on model compartment information.
+
+    Parameters
+    ----------
+    met : ThermoMetabolite
+        The metabolite to calculate the transform for.
+
+    Returns
+    -------
+    Quantity
+        The calculated Gibbs energy transform.
+    """ 
     cpd = get_compound(met)
 
     pH = met.model.pH[met.compartment]
@@ -607,7 +780,26 @@ def calc_dfG_transform(met):
     return dfG_transform
        
 
-def calc_dfG0prime(tmodel, fit_unknown_dfG0=False):
+def calc_dfG0prime(tmodel: Any, fit_unknown_dfG0: bool = False) -> Tuple[Any, Any, Any, Any]:
+    """
+    Calculate the standard transformed Gibbs energy of formation (dfG0') for metabolites.
+
+    Parameters
+    ----------
+    tmodel : ThermoModel
+        The thermodynamic model.
+    fit_unknown_dfG0 : bool, optional
+        Whether to fit unknown dfG0 values (default is False).
+
+    Returns
+    -------
+    Tuple[Quantity, Quantity, Quantity, Quantity]
+        A tuple containing:
+        - Mean dfG0 values.
+        - Mean dfG0' values.
+        - Square root of the covariance matrix of dfG0.
+        - Basis for unknown metabolites.
+    """
     dfG0_mean, dfG0_cov_sqrt, unknowns_basis = calc_dfG0(tmodel, fit_unknown_dfG0=fit_unknown_dfG0)
     
     dfG_transforms = []
@@ -620,39 +812,120 @@ def calc_dfG0prime(tmodel, fit_unknown_dfG0=False):
     return dfG0_mean, dfG0prime_mean, dfG0_cov_sqrt, unknowns_basis
     
 
-def calc_drG0(S, dfG0):
+def calc_drG0(S: np.ndarray, dfG0: Any) -> Any:
+    """
+    Calculate the standard Gibbs energy of a reaction matrix(drG0).
+
+    Parameters
+    ----------
+    S : np.ndarray
+        Stoichiometric matrix.
+    dfG0 : Quantity
+        Standard Gibbs energy of formation.
+
+    Returns
+    -------
+    Quantity
+        Standard Gibbs energy of reaction.
+    """
     drG0 = S.T @ dfG0
     return drG0
 
-def calc_model_drG0(tmodel):
+def calc_model_drG0(tmodel: Any) -> Any:
+    """
+    Calculate the standard Gibbs energy of reaction (drG0) for all reactions in the model.
+
+    Parameters
+    ----------
+    tmodel : ThermoModel
+        The thermodynamic model.
+
+    Returns
+    -------
+    Quantity
+        Standard Gibbs energy of reaction for all reactions.
+    """
     S = create_stoichiometric_matrix(tmodel)
     dfG0 = Q_(np.array([met.dfG0.m for met in tmodel.metabolites]), 'kJ/mol')
     drG0 = calc_drG0(S, dfG0)
     return drG0
 
-def calc_model_drG0prime(tmodel):
+def calc_model_drG0prime(tmodel: Any) -> Any:
+    """
+    Calculate the standard transformed Gibbs energy of reaction (drG0') for all reactions in the model.
+
+    Parameters
+    ----------
+    tmodel : ThermoModel
+        The thermodynamic model.
+
+    Returns
+    -------
+    Quantity
+        Standard transformed Gibbs energy of reaction for all reactions.
+    """
     dfG0prime = Q_(np.array([met.dfG0prime.m for met in tmodel.metabolites]), 'kJ/mol')
     S = create_stoichiometric_matrix(tmodel)
     drG0prime = calc_drG0(S, dfG0prime)
 
     return drG0prime
 
-def calc_phys_correction(tmodel):
+def calc_phys_correction(tmodel: Any) -> Any:
+    """
+    Calculate the physiological concentration correction for Gibbs energy assuming metabolites are at 1 mM not 1 M.
+
+    Parameters
+    ----------
+    tmodel : ThermoModel
+        The thermodynamic model.
+
+    Returns
+    -------
+    Quantity
+        The physiological concentration correction term.
+    """
     S = create_stoichiometric_matrix(tmodel)
     phys_conc = np.array([np.log(0.001) if not met.ignore_conc else 0 for met in tmodel.metabolites])
     phys_conc_correction = R * tmodel.T * S.T @ phys_conc
 
     return phys_conc_correction
 
-def formula_dict_to_string(formula):
+def formula_dict_to_string(formula: Dict[str, Union[int, float]]) -> str:
+    """
+    Convert a formula dictionary to a string representation.
+
+    Parameters
+    ----------
+    formula : Dict[str, Union[int, float]]
+        Dictionary where keys are element symbols and values are counts.
+
+    Returns
+    -------
+    str
+        String representation of the formula (e.g., "C6H12O6").
+    """
     formula_string = ''
     for key, value in formula.items():
         if key not in ['charge', 'e-']:
             formula_string += key + str(value)
     return formula_string
 
-def calc_biomass_formula(biomass_rxn):
-    '''calculate biomass elemental compositon from biomass equation'''
+def calc_biomass_formula(biomass_rxn: Any) -> Tuple[str, Dict[str, float]]:
+    """
+    Calculate biomass elemental composition from the biomass equation.
+
+    Parameters
+    ----------
+    biomass_rxn : ThermoReaction
+        The biomass reaction.
+
+    Returns
+    -------
+    Tuple[str, Dict[str, float]]
+        A tuple containing:
+        - The biomass formula string.
+        - The biomass atom bag (dictionary of elements).
+    """
 
     #reset biomass formula to be empty
     for met in biomass_rxn.metabolites:
@@ -688,19 +961,21 @@ def calc_biomass_formula(biomass_rxn):
 
     return biomass_formula_string, biomass_atom_bag
 
-def calculate_biomass_dfG0(biomass):
-    '''calculate the formation energy of biomass from the biomass formula
-    
+def calculate_biomass_dfG0(biomass: Any) -> Any:
+    """
+    Calculate the formation energy of biomass from the biomass formula.
+
     Parameters
     ----------
-    biomass: cobra metabolite object
+    biomass : ThermoMetabolite
+        The biomass metabolite object.
 
     Returns
     -------
-    dfG0_bm: Quantity
-        formation energy of biomass units are defined as kJ/mol for compatibility with other reactions
-        however, actual units for this value are J/gDW due to conversion in biomass eqation from mmol to gDW
-    '''
+    Quantity
+        Formation energy of biomass. Units are defined as kJ/mol for compatibility with other reactions,
+        but actual units correspond to J/gDW due to conversion in biomass equation.
+    """
 
     if 'C' in biomass.elements.keys(): 
         if biomass.elements['C'] > 0:
@@ -735,32 +1010,30 @@ def calculate_biomass_dfG0(biomass):
 
     return dfG0_bm
 
-def dfGbm(formula = {}, units = 'kJ/mol', Mr_bio = None):
-    '''
-      Calculates the formation energy of biomass or macromolecules based on their empirical formula
-      modified from Saadat et. al Entropy 2020, 22(3), 277; https://doi.org/10.3390/e22030277 https://gitlab.com/qtb-hhu/thermodynamics-in-genome-scale-models/-/blob/master/EnergyOfFormationBiomass.py?ref_type=heads
+def dfGbm(formula: Dict[str, Union[int, float]] = {}, units: str = 'kJ/mol', Mr_bio: Optional[float] = None) -> Tuple[Any, Any, float, np.ndarray]:
+    """
+    Calculate the formation energy of biomass or macromolecules based on their empirical formula.
+    Modified from Saadat et. al Entropy 2020, 22(3), 277. https://doi.org/10.3390/e22030277 https://gitlab.com/qtb-hhu/thermodynamics-in-genome-scale-models/-/blob/master/EnergyOfFormationBiomass.py?ref_type=heads
 
-      Parameters
-      ----------
-      formula : dict
-            Empirical formula of macromolecule.
-      units : str, optional
-            Units of the output. The default is 'kJ/mol'.
-      Mr_bio : Quantity, optional
-            Molecular weight of biomass in units carbon mol/gDW . The default 
-            is None and will be automatically calcualted from the 
-            elemental composition.
-      Returns
-      -------
-        Gf : Quantity
-            Gibbs energy of formation in units of 'units'      
-        Gc : Quantity
-            Gibbs energy of combustion in units of 'units'
-        y : float
-            Degree of reduction
-        stoich : array
-            Stoichiometry of combustion reaction
-    '''
+    Parameters
+    ----------
+    formula : Dict[str, Union[int, float]], optional
+        Empirical formula of macromolecule (default is empty dict).
+    units : str, optional
+        Units of the output (default is 'kJ/mol').
+    Mr_bio : float, optional
+        Molecular weight of biomass in units carbon mol/gDW.
+        Default is None and will be automatically calculated from the elemental composition.
+
+    Returns
+    -------
+    Tuple[Quantity, Quantity, float, np.ndarray]
+        A tuple containing:
+        - Gibbs energy of formation (Gf).
+        - Gibbs energy of combustion (Gc).
+        - Degree of reduction (y).
+        - Stoichiometry of combustion reaction.
+    """
 
     C = formula['C'] if 'C' in formula else 1
     H = formula['H'] if 'H' in formula else 0
@@ -820,8 +1093,20 @@ def dfGbm(formula = {}, units = 'kJ/mol', Mr_bio = None):
 
     return Q_(-Gf/Mr_bio, units),Q_(Gc/Mr_bio, units),y,stoich #minus Gf because biomass is a substrate in the combustion reaction         
 
-def proton_dict(tmodel):
-    """identifies protons in the model so they can be added to reactions for balancing """
+def proton_dict(tmodel: Any) -> Dict[str, Any]:
+    """
+    Identify protons in the model so they can be added to reactions for balancing.
+
+    Parameters
+    ----------
+    tmodel : ThermoModel
+        The thermodynamic model.
+
+    Returns
+    -------
+    Dict[str, ThermoMetabolite]
+        Dictionary mapping compartment IDs to proton metabolites.
+    """
 
     proton_annotations = {'Kegg': 'C00080',
      'bigg.metabolite': 'h',
@@ -873,8 +1158,20 @@ def proton_dict(tmodel):
 
     return proton_dict
 
-def charge_dict(tmodel):
-    """identifies charge in the model so they can be added to reactions for balancing """
+def charge_dict(tmodel: Any) -> Dict[str, Any]:
+    """
+    Identify charge metabolites in the model for balancing.
+
+    Parameters
+    ----------
+    tmodel : ThermoModel
+        The thermodynamic model.
+
+    Returns
+    -------
+    Dict[str, ThermoMetabolite]
+        Dictionary mapping compartment IDs to charge metabolites.
+    """
     charge_dict = {}
     compartments = []
     for met in tmodel.metabolites:
@@ -905,8 +1202,20 @@ def charge_dict(tmodel):
 
     return charge_dict
 
-def mg_dict(tmodel):
-    """identifies magnesiums in the model so they can be added to reactions for balancing """
+def mg_dict(tmodel: Any) -> Dict[str, Any]:
+    """
+    Identify magnesium metabolites in the model for balancing.
+
+    Parameters
+    ----------
+    tmodel : ThermoModel
+        The thermodynamic model.
+
+    Returns
+    -------
+    Dict[str, ThermoMetabolite]
+        Dictionary mapping compartment IDs to magnesium metabolites.
+    """
 
     mg_annotations = {'bigg.metabolite': 'mg2',
          'chebi': 'CHEBI:18420',
@@ -957,10 +1266,22 @@ def mg_dict(tmodel):
 
     return mg_dict
 
-def _transport_direction(reaction):
-    """Function to define the inner and outer compartments of a transport reaction. 
-    Useful for consistently defining the major microspecies that is transported considering the conditions 
-    of the inner compartment"""
+def _transport_direction(reaction: Any) -> Tuple[str, Optional[str]]:
+    """
+    Define the inner and outer compartments of a transport reaction.
+    Useful for consistently defining the major microspecies that is transported considering the conditions
+    of the inner compartment.
+
+    Parameters
+    ----------
+    reaction : ThermoReaction
+        The transport reaction.
+
+    Returns
+    -------
+    Tuple[str, Optional[str]]
+        A tuple containing the inner compartment ID and the outer compartment ID (or None).
+    """
 
     compartments = tuple(reaction.compartments)
 
@@ -983,7 +1304,22 @@ def _transport_direction(reaction):
 
 
 #separate reaction into inner and outer half reactions 
-def comp_split(reaction, compartment):
+def comp_split(reaction: Any, compartment: str) -> Dict[Any, float]:
+    """
+    Separate reaction metabolites into those belonging to a specific compartment.
+
+    Parameters
+    ----------
+    reaction : ThermoReaction
+        The reaction to split.
+    compartment : str
+        The compartment ID to filter by.
+
+    Returns
+    -------
+    Dict[ThermoMetabolite, float]
+        Dictionary of metabolites in the specified compartment and their stoichiometry.
+    """
     metabolites = {}
     for metabolite in reaction.metabolites:
         if metabolite.compartment == compartment:
@@ -991,7 +1327,33 @@ def comp_split(reaction, compartment):
     return (metabolites)
 
 
-def transported_c_h(reaction, round_dp = False, verbose=False, rxn_already_balanced = True):
+def transported_c_h(reaction: Any, round_dp: Union[bool, int] = False, verbose: bool = False, rxn_already_balanced: bool = True) -> Tuple[float, float, float, float, str, str, bool]:
+    """
+    Calculate the transported protons and charge for a reaction.
+
+    Parameters
+    ----------
+    reaction : ThermoReaction
+        The reaction to analyze.
+    round_dp : Union[bool, int], optional
+        Decimal places for rounding (default is False).
+    verbose : bool, optional
+        Whether to print verbose output (default is False).
+    rxn_already_balanced : bool, optional
+        Whether the reaction is already balanced (default is True).
+
+    Returns
+    -------
+    Tuple[float, float, float, float, str, str, bool]
+        A tuple containing:
+        - Net protons in inner compartment.
+        - Net charge in inner compartment.
+        - Net protons in outer compartment.
+        - Net charge in outer compartment.
+        - Inner compartment ID.
+        - Outer compartment ID.
+        - Whether the reaction is balanced.
+    """
     inner_comp, outer_comp = _transport_direction(reaction)
     transported_mets = calc_transported_mets(reaction)
     
@@ -999,8 +1361,6 @@ def transported_c_h(reaction, round_dp = False, verbose=False, rxn_already_balan
     pMg = Q_(14,'') #for transported mets set low Mg conc as we assume Mg is not transported 
     pH_inner = reaction.model.pH[inner_comp]
     ionic_strength_inner = reaction.model.I[inner_comp]
-    #pH_outer = reaction.model.pH[outer_comp]
-    #ionic_strength_outer = reaction.model.I[outer_comp]
     temperature = reaction.model.T
 
     inner_mets = comp_split(reaction,inner_comp)
@@ -1041,38 +1401,20 @@ def transported_c_h(reaction, round_dp = False, verbose=False, rxn_already_balan
     for met, stoich in inner_mets.items(): 
         if met not in reaction.model.charge_dict.values():
              
-            #if met in reaction.model.proton_dict().values():
-            #   if reaction.transported_h is not None:
-            #       stoich = reaction.transported_h[inner_comp]
             if not rxn_already_balanced:
                 if met in transported_mets:
                     charge, protons, Mg = major_microspecies(met, pH_inner, pMg, ionic_strength_inner, temperature)
                 else:
-                    charge, protons, Mg, ms_df = met.average_charge_protons(pMg=pMg, round_dp = round_dp) #major ms in metabolite compartment ignore mg ToDo check this doesn't cause gibbs enery balance issues if balancing magneisum... 
+                    charge, protons, Mg, ms_df = met.average_charge_protons(pMg=pMg, round_dp = round_dp) #major ms in metabolite compartment ignore mg ToDo! check this doesn't cause gibbs enery balance issues if balancing magneisum... 
             else:
-                #ToDo this ovverides major microespeceis calcualtion - makes this func work with balanced reactions
-                charge, protons, Mg, ms_df = met.average_charge_protons(pMg=pMg, round_dp = round_dp) #major ms in metabolite compartment ignore mg ToDo check this doesn't cause gibbs enery balance issues if balancing magneisum... 
+                #ToDo! this ovverides major microespeceis calcualtion - makes this func work with balanced reactions
+                charge, protons, Mg, ms_df = met.average_charge_protons(pMg=pMg, round_dp = round_dp) #major ms in metabolite compartment ignore mg ToDo! check this doesn't cause gibbs enery balance issues if balancing magneisum... 
 
-            #calculate net electrons and add to charge term 
-         #   e = 0 
-          #  if met.compartment is not None:
-           #     if met.compound.atom_bag is not None:
-            #        if 'e-' in met.compound.atom_bag:
-             #           e = met.compound.atom_bag['e-']  
-
-            #z_inner -= stoich*e
-        #    print(met.id, stoich *protons,n_h_inner)
             n_h_inner += stoich * protons
             z_inner +=  stoich * charge
-          #  print(met.id, stoich *protons,n_h_inner)
-        # if cobra_formula:
-        #     print('using cobra formula',met,charge,protons)
+          
     for met, stoich in outer_mets.items():
         if met not in reaction.model.charge_dict.values():
-
-            #if met in reaction.model.proton_dict().values():
-            #   if reaction.transported_h is not None:
-            #       stoich = reaction.transported_h[outer_comp]
 
             if not rxn_already_balanced:
 
@@ -1085,20 +1427,10 @@ def transported_c_h(reaction, round_dp = False, verbose=False, rxn_already_balan
                 charge, protons, Mg, ms_df = met.average_charge_protons(pMg=pMg, round_dp = round_dp) #major ms in metabolite compartment ignore mg
 
 
-            #calculate net electrons and add to charge term 
-           # e = 0 
-            #if met.compartment is not None:
-             #   if met.compound.atom_bag is not None:
-              #      if 'e-' in met.compound.atom_bag:
-               #         e = met.compound.atom_bag['e-']
-                  
-            #z_outer -= stoich*e
-
-          #  print(met.id, stoich *protons,n_h_outer)
+           
 
             n_h_outer += stoich * protons
             z_outer +=  stoich * charge
-          #  print(met.id, stoich *protons,n_h_outer)
 
     # special case for transporters involving ion transport 
     # free ions are defined in the reaction._transported_charge dict 
@@ -1119,19 +1451,24 @@ def transported_c_h(reaction, round_dp = False, verbose=False, rxn_already_balan
         balanced = True
         balance = "balanced"
 
-    #if balanced == False:
-    #   warnings.warn("inner and outer net half-reactions of "
-    #                   f"{reaction.id} are "
-    #                   f"{balance}:"
-    #                   f"n_h(inner) = {n_h_inner}, n_h(outer) = {n_h_outer}, "
-    #                   f"z(inner) = {z_inner}, z(outer) = {z_outer}, ", stacklevel=2)
-
     reaction.balanced=balanced ## add balanced flag to retrieve later for reporting
 
     return n_h_inner, z_inner, n_h_outer, z_outer,inner_comp, outer_comp, balanced
 
-def calc_transported_mets(reaction):
-    """calculates metabolites transported in a transport reaction"""
+def calc_transported_mets(reaction: Any) -> Dict[Any, float]:
+    """
+    Calculate metabolites transported in a transport reaction.
+
+    Parameters
+    ----------
+    reaction : ThermoReaction
+        The transport reaction.
+
+    Returns
+    -------
+    Dict[ThermoMetabolite, float]
+        Dictionary of transported metabolites and their stoichiometry.
+    """
     if len(reaction.compartments) != 2:
         return {}
     
@@ -1168,7 +1505,27 @@ def calc_transported_mets(reaction):
     return transported_mets
 
 
-def calc_drGtransport(reaction, round_dp = False, rxn_already_balanced=True):
+def calc_drGtransport(reaction: Any, round_dp: Union[bool, int] = False, rxn_already_balanced: bool = True) -> Tuple[Any, Any, Any]:
+    """
+    Calculate the Gibbs energy of transport (drGtransport). Note this will balance the reaction if rxn_already_balanced is False as the reaction must be balanced for accurate calculation of drGtransport.
+
+    Parameters
+    ----------
+    reaction : ThermoReaction
+        The transport reaction.
+    round_dp : Union[bool, int], optional
+        Decimal places for rounding or stoichiometry of protons when automatically balancing the reaction (default is False).
+    rxn_already_balanced : bool, optional
+        Whether the reaction is already balanced (default is True).
+
+    Returns
+    -------
+    Tuple[Quantity, Quantity, Quantity]
+        A tuple containing:
+        - Total Gibbs energy of transport.
+        - Gibbs energy of proton transport.
+        - Gibbs energy of electrostatic potential.
+    """
     if len(reaction.compartments) == 2:
         transported_protons, transported_charge, outer_h,outer_z,inner_comp, outer_comp, balanced = transported_c_h(reaction, round_dp = round_dp,rxn_already_balanced=rxn_already_balanced)
         #proton stoichiomtry
@@ -1222,12 +1579,44 @@ def calc_drGtransport(reaction, round_dp = False, rxn_already_balanced=True):
         
     return -dg_protons-dg_electrostatic, -dg_protons, -dg_electrostatic
 
-def leading_zeros(decimal):
-    '''Calculate the leading 0s in a decimal i.e 0.001 returns 2'''
+def leading_zeros(decimal: float) -> Union[bool, int]:
+    """
+    Calculate the number of leading zeros in a decimal.
+
+    Parameters
+    ----------
+    decimal : float
+        The decimal number.
+
+    Returns
+    -------
+    Union[bool, int]
+        The number of leading zeros, or False if the number is too small.
+    """
     return False if abs(decimal) <= 1e-6 else -floor(log10(abs(decimal))) - 1
 
-def net_elements(reaction, balance_mg = True, round_dp=False, rxn_already_balanced = True):
-    """Calculates the net protons, charge, and mg of a reaction"""
+def net_elements(reaction: Any, balance_mg: bool = True, round_dp: Union[bool, int] = False, rxn_already_balanced: bool = True) -> Tuple[Dict[Any, float], Dict[str, float]]:
+    """
+    Calculate the net protons, charge, and magnesium of a reaction.
+
+    Parameters
+    ----------
+    reaction : ThermoReaction
+        The reaction to analyze.
+    balance_mg : bool, optional
+        Whether to balance magnesium (default is True).
+    round_dp : Union[bool, int], optional
+        Decimal places for rounding (default is False).
+    rxn_already_balanced : bool, optional
+        Whether the reaction is already balanced (default is True).
+
+    Returns
+    -------
+    Tuple[Dict[ThermoMetabolite, float], Dict[str, float]]
+        A tuple containing:
+        - Dictionary of net elements (protons, charge, Mg) to add/remove.
+        - Dictionary of transported free protons.
+    """
     if balance_mg is False:
         pMg = Q_(14,'')
     else:
@@ -1504,22 +1893,23 @@ def net_elements(reaction, balance_mg = True, round_dp=False, rxn_already_balanc
     return net_elements, transported_free_h
 
 
-def reaction_balance(reaction, balance_charge = True, balance_mg = True, round_dp = False, rxn_already_balanced=False):
-    ''' 
-    Docstring for reaction_balance
+def reaction_balance(reaction: Any, balance_charge: bool = True, balance_mg: bool = True, round_dp: Union[bool, int] = False, rxn_already_balanced: bool = False) -> None:
+    """
+    Balance a reaction for protons, charge, and magnesium.
 
-    :param reaction: Description
-    :type reaction: 
-    :param balance_charge: Description
-    :type balance_charge: 
-    :param balance_mg: Description
-    :type balance_mg: 
-    :param round_dp: Description
-    :type round_dp: 
-    :param rxn_already_balanced: Description
-    :type rxn_already_balanced: 
-    :return: Description
-    :rtype: Any'''
+    Parameters
+    ----------
+    reaction : ThermoReaction
+        The reaction to balance.
+    balance_charge : bool, optional
+        Whether to balance charge (default is True).
+    balance_mg : bool, optional
+        Whether to balance magnesium (default is True).
+    round_dp : Union[bool, int], optional
+        Decimal places for rounding (default is False).
+    rxn_already_balanced : bool, optional
+        Whether the reaction is already balanced (default is False).
+    """
 
     transporter = False
 
@@ -1612,27 +2002,42 @@ def reaction_balance(reaction, balance_charge = True, balance_mg = True, round_d
 from math import  copysign
 from itertools import product
 
-def generate_combinations(dictionary):
+def generate_combinations(dictionary: Dict[Any, List[Any]]) -> List[Dict[Any, Any]]:
+    """
+    Generate all combinations of values from a dictionary of lists.
+
+    Parameters
+    ----------
+    dictionary : Dict[Any, List[Any]]
+        Dictionary where values are lists of options.
+
+    Returns
+    -------
+    List[Dict[Any, Any]]
+        List of dictionaries representing all combinations.
+    """
     keys = dictionary.keys()
     values = dictionary.values()
     combinations = product(*values)
     return [dict(zip(keys, combination)) for combination in combinations]
 
 
-def new_reaction_name(reaction, charge_states):
-    '''Function to generate a new reaction name for a transporter variant with a specific charge state.
-    
+def new_reaction_name(reaction: Any, charge_states: List[int]) -> str:
+    """
+    Generate a new reaction name for a transporter variant with a specific charge state.
+
     Parameters
     ----------
-    reaction: tmodel.reaction
-        reaction to add variants of
-    charge_states: list of int
-        list of charge states of the transported metabolites
-        
+    reaction : ThermoReaction
+        Reaction to add variants of.
+    charge_states : List[int]
+        List of charge states of the transported metabolites.
+
     Returns
     -------
-        str: name of the new reaction
-    '''
+    str
+        Name of the new reaction.
+    """
 
     ID_compartment = ''
     if any([reaction.id.endswith('_'+(''.join(reaction.compartments))), 
@@ -1645,26 +2050,28 @@ def new_reaction_name(reaction, charge_states):
     return name
 
 
-def add_transporter_varaints(reaction, add_charge_neutral = True, balance_charge = False, round_dp = False):
-    '''Function to add all  transporter variants of a reaction.
+def add_transporter_varaints(reaction: Any, add_charge_neutral: bool = True, balance_charge: bool = False, round_dp: Union[bool, int] = False) -> Set[Any]:
+    """
+    Add all transporter variants of a reaction.
     Variants are added for all species of transported metabolites with an abundance of >10% in the inner compartment.
-    Additional transporters to represent a charge neutral transporter can also be added (including intermediate charge transport)
+    Additional transporters to represent a charge neutral transporter can also be added.
 
     Parameters
     ----------
-    reaction: tmodel.reaction
-        reaction to add transporter variants of
-    add_charge_neutral: bool
-        if True then a charge neutral variants of the transporter will be added
-    balance_charge: bool
-        if True then the reaction will be balanced for charge (if original reaction contains charge then this will be forced True)
-    round_dp: int
-        for charge and proton balaning if rounded values are used (should match original reaction rounding)
+    reaction : ThermoReaction
+        Reaction to add transporter variants of.
+    add_charge_neutral : bool, optional
+        If True, a charge neutral variant will be added (default is True).
+    balance_charge : bool, optional
+        If True, the reaction will be balanced for charge (default is False).
+    round_dp : Union[bool, int], optional
+        Decimal places for rounding (default is False).
 
     Returns
     -------
-    list of ThermoReaction objects representing the transporter variants
-    '''
+    Set[ThermoReaction]
+        Set of ThermoReaction objects representing the transporter variants.
+    """
     
     transporter_variants = set({}) 
 
@@ -1819,25 +2226,25 @@ def add_transporter_varaints(reaction, add_charge_neutral = True, balance_charge
 
 
 
-def add_transporter_charge_varaint(reaction, charge_state, round_dp = False):
-    '''Function to add a transporter variant with a specific net charge transport. Protons are added to either side of
-    the equation to represent different charge states. Negative values are represented by protons with an opposite
-    transport stoichiometry. 
-    
+def add_transporter_charge_varaint(reaction: Any, charge_state: int, round_dp: Union[bool, int] = False) -> Any:
+    """
+    Add a transporter variant with a specific net charge transport.
+    Protons are added to either side of the equation to represent different charge states.
+
     Parameters
     ----------
-    reaction: tmodel.reaction
-        reaction to add variants of
-    charge_state: int
-        desired net charge to be transported (can represent different charge states of the transported metabolite)
-    round_dp: int
-        for charge and proton balaning if rounded values are used 
+    reaction : ThermoReaction
+        Reaction to add variants of.
+    charge_state : int
+        Desired net charge to be transported.
+    round_dp : Union[bool, int], optional
+        Decimal places for rounding (default is False).
 
     Returns
     -------
-    ThermoReaction with a the desired net charge transport
-
-    '''
+    ThermoReaction
+        ThermoReaction with the desired net charge transport.
+    """
 
     
     #firstly ensure the reaciton is balanced 
