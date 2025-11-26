@@ -12,11 +12,12 @@ authors = [
 description = "Thermodynamic flux analysis"
 readme = "README.md"
 requires-python = "~=3.9"
+license = { text = "GPL-3.0" }
 classifiers = [
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: GNU General Public License v3.0",
-    "Operating System :: OS Independent",
 ]
+
 dependencies = [
     "numpy>=1.13",
     "h5py",

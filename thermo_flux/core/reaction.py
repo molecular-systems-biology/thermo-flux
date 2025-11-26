@@ -21,10 +21,20 @@ water_annotations = {'kegg': 'C00001',
 
 
 class ThermoReaction(Reaction):
-    """Thermodynamic metabolite object.
+    """
+    Thermodynamic reaction object: thermodynamic extension of a COBRA reaction.
 
-    takes cobra reaction and adds thermodynamic properties
+    This class adds attributes/methods required for thermodynamic calculations:
+    - Standard, transformed, and physicochemically corrected Gibbs energies
+        (ΔrG°, ΔrG′°, ΔrGm′).
+    - Transport processes- related reaction energy terms (total transport, proton, and charge components).
+    - Flags for ignoring second-law constraints in boundary, water transport, or biomass reactions.
+    - methods to balance reactions are called from the drg_tools module (net_elements,transported_c_h)
 
+    Initialization:
+    - Copies non-structural attributes from the COBRA reaction.
+    - Wraps participating metabolites in ThermoMetabolite objects.
+    - Assigns transport- and second-law-related flags based on reaction content.
     """
 
     def __init__(self,

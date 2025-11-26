@@ -44,10 +44,17 @@ water_annotations = {'kegg': 'C00001',
 
 
 class ThermoMetabolite(Metabolite):
-    """Thermodynamic metabolite object.
+    """Thermodynamic metabolite object : metabolite subclass that adds thermodynamic state and concentration bounds.
 
-    takes cobra metabolite and adds thermodynamic properties
+    This class extends the base ``Metabolite`` and adds attributes/methods required for thermodynamic calculations:
+    - standard Gibbs energies
+    (``dfG0``, ``dfG0prime``)
+    - concentration bounds (``lower_bound`` and ``upper_bound``)
+    - equilibrator compound (``compound``), used for chemical species calculations
 
+    Some thermodynamic exceptions applied at initialization: 
+    - proton and water concentration are fixed at 1 M
+    - redox and biomass attributes enforce .ignore_conc   
     """
 
     # add concentration variable if using optlang 

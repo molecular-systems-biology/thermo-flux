@@ -13,7 +13,20 @@ def add_TFBA_variables(tmodel, m, conds=[''], error_type='linear',
                        gdiss_constraint=False, sigmac_limit=12.3, split_v=False, big_M = False):
     
     """
-    Generates gurobi model from thermo model. Contains constraints for FBA optimization
+    Generates gurobi model from a thermodynamic model. 
+    The gurobi model contains :
+      - Flux variables, Gibbs energy variables (ΔrG°, ΔrG, ΔrG_conc), 
+        direction binaries, and (optionally) split forward/backward fluxes.
+      - Concentration log-variables with bounds from metabolite constraints.
+      - Mixed-integer constraints linking reaction direction, flux sign, and ΔrG.
+      - Mass-balance constraints for each condition.
+      - Error models for uncertainty in drG0 using covariance (recommended) or box errors.
+      - Optional Gibbs dissipation rate constraint (Niebel et al., 2019).
+      - Objective is defined using the original FBA objective.
+
+    Returns:
+      - Updated Gurobi model with TFBA variables and constraints.
+      - Dictionary of created variable blocks.Contains constraints for FBA optimization
     """
     # RT term 
     RT = (R*tmodel.T.m_as('K')).m
@@ -85,15 +98,15 @@ def add_TFBA_variables(tmodel, m, conds=[''], error_type='linear',
         #drG term 
         m.addConstr(drG[cond_index] == drGt0tr + drG_error + drG_conc[cond_index], name = 'drG_constraint_'+str(cond)) #+ epsilon 
 
-        #mass balance ## add a feastol variable to allow the MIP start to be feasible when loading fluxes ##doesn't not have a significant impact on the solution
-        feastol=m.params.FeasibilityTol
-        #it's a variable so it can be minimized in the objective function ..
-        mass_balance = 'else'
-        feasvar = m.addVar(lb=0, ub=0, name = 'feasvar')
+        #mass balance 
+        ### TFBA on BiGG models : added a feastol variable to allow the MIP start (from FBA)to be feasible when loading fluxes 
+        ### the feasvar is then minimized in the objective funciton and has almost no impact on the solution
+        mass_balance = 'strict'
+        feasvar = m.addVar(lb=0, ub=0, name = 'feasvar') ## introduce a variable to allow the MIP start to be feasible when loading fluxes, change ub to reproduce
 
         if mass_balance=='strict':
             m.addConstr(S@v[cond_index] == 0, name = 'mass_balance_'+str(cond))
-        else:
+        else: ## TFBA on BiGG models 
             m.addConstr(S@v[cond_index] <= 0+feasvar, name = 'mass_balance_neg'+str(cond))
             m.addConstr(S@v[cond_index] >= 0-feasvar, name = 'mass_balance_pos'+str(cond))
 
@@ -251,6 +264,8 @@ def add_TFBA_variables(tmodel, m, conds=[''], error_type='linear',
     else:
         direction = GRB.MAXIMIZE 
         feastol_sign = -1
+
+    ##feasility tolerance feasvar to reproduce protocol results, but by default the feasvar has (0,0) bounds so the objective is only the FBA objective
     m.setObjective(gp.quicksum(v[:, [i for i, rxn in enumerate(tmodel.reactions) if rxn.objective_coefficient == 1][0]])+feastol_sign*feasvar, direction)
 
 
@@ -264,7 +279,18 @@ def add_TFBA_variables(tmodel, m, conds=[''], error_type='linear',
 
 
 def total_cell_conc(tmodel,conds = [''], metabolites = [], volume_data = None, extracellular = None, GAMS_style = False):
-    '''add total cell concentrations constraints'''
+    """
+    Add total cellular concentration constraints (whole-cell) to a TFBA model, used to set bounds from metabolome data or for metabolite concentration regression. 
+    Metabolome data indeed provide whole-cell concentrations of metabolites whereas in the model we have compartmental concentrations. 
+    To define whole-cell concentrations, we add :
+      - Variables for whole-cell concentrations for the metabolites in argument (typically measured ones) and a list of conditions.
+      - Variables for exponential of the corresponding compartmental concentrations  (linked with ln c = exp (new_var), where new var is called met_conc_dist)
+      - Constraints linking compartment concentrations to total cell concentrations, scaled by compartment volumes : C_wholecell=Sum_compartment(C_compartment*vol_compartment)
+
+    Returns:
+      - Updated Gurobi model with added concentration variables and constraints.
+      - Dictionary of model variables including 'cell_conc' and 'met_conc_dist'.
+    """
 
     mvars = tmodel.mvars
     m=tmodel.m
@@ -335,7 +361,8 @@ def total_cell_conc(tmodel,conds = [''], metabolites = [], volume_data = None, e
 def regression(tmodel,m, mvars,conds, flux_data, metabolite_data, volume_data,
                conc_fit=True, flux_fit=True, drG_fit=True, resnorm=1, qm_resnorm = 2,
                error_type = 'covariance', conc_units = None,extracellular=None):
-    '''Add variables and constraints for regression to data.
+    '''Add variables and constraints for regression to data. If conc_fit is True add constraints to regress metabolite concentration using total_cell_conc.
+    Modifies the objective of the gurobi model : minimize sum of residuals.
     
     Parameters
     ----------
@@ -678,8 +705,9 @@ def regression_legacy(tmodel,m, mvars,conds, flux_data, metabolite_data, volume_
     return m, mvars
 
 
-def variability_analysis(tmodel, vars = []):
-    '''Set up a multiscenario optimisation problem to perform variability analysis on a given variable
+def variability_analysis(m, vars = []):
+    '''Set up a multiscenario optimisation problem to perform variability analysis on a given variable.
+    The model will have 2 scenarios for each variable, one for the lower bound and one for the upper bound.
 
     Parameters
     ----------
@@ -694,7 +722,6 @@ def variability_analysis(tmodel, vars = []):
         gurobipy model object with added variables and constraints
     '''
 
-    m = tmodel.m
     m.NumScenarios = 0 #reset any existing scenarios
     #reset any current objective 
     for variable in m.getVars():
@@ -731,9 +758,26 @@ def variability_analysis(tmodel, vars = []):
     return m
 
 
-def variability_results(tmodel):
+def variability_results(m):
+    '''gets results from a local variability analysis
 
-    m = tmodel.m
+    Parameters
+    ----------
+    m: gurobipy.Model
+        gurobipy model object
+
+    Returns
+    -------
+    obj_val: dict
+        dictionary of objective values (actual best incumbent) for each variable
+    obj_bound: dict
+        dictionary of objective bounds (best known bound) for each variable
+    optimal_bounds: dict
+        dictionary of optimal bounds for each variable
+    MIPGaps: dict
+        dictionary of MIPGaps (MIPGap = abs((ObjBound-ObjVal)/ObjVal)) for each variable
+    '''
+
 
     no_scenarios = m.NumScenarios
     if no_scenarios > 0:
@@ -815,8 +859,14 @@ def read_bounds(bounds_file):
     return pd.DataFrame(drG_bounds).T
   
 def compute_IIS(tmodel):
+    '''Creates an Irreducible Infeasible Subsystem (IIS) for the gurobi model, solves it and prints the IIS constraints and bounds. 
+    Gurobi documentation : an IIS is a subset of the constraints and variable bounds in the infeasible model with the following properties :
+        - It is still infeasible.
+        - If a single constraint or bound is removed, the subsystem becomes feasible.
+    https://docs.gurobi.com/projects/optimizer/en/current/concepts/logging/iis.html
+    Could be used on any gurobi model (except multiscenario models).'''
 
-    m=tmodel.m
+    m= tmodel.m
     m.computeIIS() #compute irreducible inconsistent subset 
 
     IIS_constr_list = []

@@ -42,10 +42,15 @@ default_pMg = Q_(3)
 
 
 class ThermoModel(Model):
-    """Thermodynamic model object.
+    """Thermodynamic model object : thermodynamic extension of a COBRA model.
 
-    takes cobra model and adds thermodynamic properties
+    This class extends the base ``Model`` cobra class adds attributes/methods required for thermodynamic calculations :
+      - Compartmental pH, ionic strength, pMg, temperature, and membrane potential differences.
+      - containers for the proton, charge, and magnesium metabolites of the model.
+      - Optional biomass splitting, biomass ΔfG'° estimation, and adding charge-exchange reactions.
 
+    The main method is ''update_thermo_info'' which calls equilibrator to calculate the thermodynamic properties of the metabolites and reactions 
+    (see drg_tools module).
     """
 
     def __init__(
@@ -152,6 +157,22 @@ class ThermoModel(Model):
 
 
     def update_thermo_info(self, fit_unknown_dfG0=False, search = False, round_dp = False, report=False):
+        '''Compute thermodynamic parameters for all metabolites and all reactions.
+
+        Steps:
+        - Identify compounds and initialize charge, proton, and magnesium lookup tables.
+        - Estimate metabolite ΔfG'° (mean) and the square root of ΔfG'° covariance
+            using drg_tools.calc_dfG0prime. Store ΔfG'°, ΔfG' (pH-corrected), and standard errors.
+        - Compute reaction ΔrG° and ΔrG'° means, and ΔrGm′ (including physicochemical
+            corrections: proton, Mg, ionic strength, membrane potential).
+        - Using the stoichiometric matrix S, form the square root of drG0 covariance : standard_dgr_Q = Sᵀ @ dfG0_cov_sqrt
+            - Zero out numerically small elements in standard_dgr_Q and drop all-zero degrees of freedom.
+        - For transport processes (2 compartment reactions), compute transport contributions to ΔrG0prime using drg_tools.calc_drGtransport.
+        - Stores standard_dgr_Q as _drG0_cov_sqrt for further use in the gurobi model.
+
+        Returns:
+        - If report=True, returns a thermodynamic summary report.
+        '''
 
         print('Identifying compounds...')
         self.get_compounds(search = search)        
