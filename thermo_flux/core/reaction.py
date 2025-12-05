@@ -372,19 +372,38 @@ class ThermoReaction(Reaction):
             rxn_info.loc[met.id,'name']=name
             rxn_info.loc[met.id,'compartment']=met.compartment
             rxn_info.loc[met.id,'stoichiometric coefficient']=stoich
-        #check for duplicates in name column == metabolites that are present in 2 compartments
-        #and build sub reaction with conserved metabolites over transport of 2 compartments
+
         list_sub_rxn=[]
-        for i,row in rxn_info[rxn_info.duplicated(subset=['name'])]['name'].items():
-            #we get the name of the metabolite that is present twice 
-            sub_rxn=ThermoReaction(Reaction('sub_rxn_transport_'+str(row)))
-            sub_rxn.add_metabolites({self.model.metabolites.get_by_id(rxn_info[rxn_info['name']==row].index[0]):rxn_info[rxn_info['name']==row]['stoichiometric coefficient'].values[0],self.model.metabolites.get_by_id(rxn_info[rxn_info['name']==row].index[1]):rxn_info[rxn_info['name']==row]['stoichiometric coefficient'].values[1]})
-            list_sub_rxn.append(sub_rxn)
-            #remove the metabolites from the original reaction
-            self.subtract_metabolites({self.model.metabolites.get_by_id(rxn_info[rxn_info['name']==row].index[0]):rxn_info[rxn_info['name']==row]['stoichiometric coefficient'].values[0],self.model.metabolites.get_by_id(rxn_info[rxn_info['name']==row].index[1]):rxn_info[rxn_info['name']==row]['stoichiometric coefficient'].values[1]})
-        #We now have : sub reactions with conserved metabolites and the initial reaction without the conserved metabolites
-        #we balance the sub reactions and the modified initial reaction
-        #then we add the balanced sub reactions to the modified initial reaction
+        #build a sub reaction with metabolites that are transported
+        ##first check transported metabolites
+        if self.transported_mets is not None : 
+            tmet =next(iter(self.transported_mets)) ##get the transported metabolite ## here only works if there's only one
+            #create new sub reaction
+            sub_rxn=ThermoReaction(Reaction('sub_rxn_transport_'+str(tmet.id)))
+            ##also copy the transported mets that was manually set
+            sub_rxn.transported_mets=self.transported_mets
+
+            ##add the tmet and its counterpart in the different compartment 
+            ##we find it by looking in the rxn_info df and finding the metabolites that have the corresponding name 
+            transported_mets_fromdf=rxn_info[rxn_info['name']==rxn_info.loc[tmet.id,'name']].index ## get the ids
+            dict_rxn_met=  {self.model.metabolites.get_by_id(metid):rxn_info.loc[metid,'stoichiometric coefficient'] for metid in transported_mets_fromdf}
+            sub_rxn.add_metabolites(dict_rxn_met) ## add the transporte mets to the subrxn
+            self.subtract_metabolites(dict_rxn_met) #remove them from init reaction as we modify it briefly
+            list_sub_rxn.append(sub_rxn) #add to the list we return 
+
+        else : 
+            ##otherwise try to identify base on the metabolite that is present twice (using the name)
+            #check for duplicates in name column == metabolites that are present in 2 compartments
+            for i,row in rxn_info[rxn_info.duplicated(subset=['name'])]['name'].items():
+                #we get the name of the metabolite that is present twice 
+                sub_rxn=ThermoReaction(Reaction('sub_rxn_transport_'+str(row)))
+                sub_rxn.add_metabolites({self.model.metabolites.get_by_id(rxn_info[rxn_info['name']==row].index[0]):rxn_info[rxn_info['name']==row]['stoichiometric coefficient'].values[0],self.model.metabolites.get_by_id(rxn_info[rxn_info['name']==row].index[1]):rxn_info[rxn_info['name']==row]['stoichiometric coefficient'].values[1]})
+                list_sub_rxn.append(sub_rxn)
+                #remove the metabolites from the original reaction
+                self.subtract_metabolites({self.model.metabolites.get_by_id(rxn_info[rxn_info['name']==row].index[0]):rxn_info[rxn_info['name']==row]['stoichiometric coefficient'].values[0],self.model.metabolites.get_by_id(rxn_info[rxn_info['name']==row].index[1]):rxn_info[rxn_info['name']==row]['stoichiometric coefficient'].values[1]})
+            #We now have : sub reactions with transported metabolites and the initial reaction without the transported metabolites
+            #we balance the sub reactions and the modified initial reaction
+            #then we add the balanced sub reactions to the modified initial reaction
         return list_sub_rxn
 
 
