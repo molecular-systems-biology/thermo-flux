@@ -1916,18 +1916,21 @@ def reaction_balance(reaction: Any, balance_charge: bool = True, balance_mg: boo
     if reaction.boundary == False:
         if len(reaction.compartments) == 3:
             list_sub_rxn = reaction.split_reaction() # this returns a list of sub reactions (2compartments) and modifies the input reaction
-            reaction.model.charge_dict
-            reaction.model.proton_dict
-            reaction.model.mg_dict
+            #We now have : sub reactions with transported metabolites and the initial reaction without the transported metabolites
+            #we balance the sub reactions and the modified initial reaction
+            #then we add the balanced sub reactions to the modified initial reaction
             if len(reaction.compartments)>0:
-                assert len(reaction.compartments) <3, 'The reaction still has more than 2 compartments' # this means that one metabolite is not conserved over the transport of 2 compartments, and we cannot deal we this case yet
+                assert len(reaction.compartments) <3, 'The reaction still has more than 2 compartments' 
+                # this means that the transported metabolite either couldn t be identified or no metabolite is transported across 2 compartments
                 a= reaction_balance(reaction, balance_charge=True, balance_mg=False)#maybe the reaction has been totally emptied
+                print(reaction.metabolites,'init rxn')
                 drg_transport, dg_protons, dg_electrostatic = calc_drGtransport(reaction,  round_dp = round_dp)
             else:
                 drg_transport, dg_protons, dg_electrostatic = Q_(0,'kJ/mol'), Q_(0,'kJ/mol'), Q_(0,'kJ/mol')
             for sub_rxn in list_sub_rxn:
                 reaction.model.add_reactions([sub_rxn])
                 a=reaction_balance(sub_rxn, balance_charge=True, balance_mg=False)
+                print(sub_rxn.metabolites)
                 reaction.add_metabolites(sub_rxn.metabolites)
                 sub_drg_transport, sub_dg_protons, sub_dg_electrostatic = calc_drGtransport(sub_rxn,  round_dp = round_dp)
                 drg_transport += sub_drg_transport

@@ -45,3 +45,5 @@ dependencies = [
 
 [tool.setuptools]
 #packages = ["thermo_flux"]
+[tool.setuptools.packages.find]
+exclude = ["Results_protocol_paper_2024","manuscript","docs"]
