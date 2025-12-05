@@ -1296,7 +1296,7 @@ def _transport_direction(reaction: Any) -> Tuple[str, Optional[str]]:
     elif len(compartments) > 2:
         #reactions with more than two compartments - find the innermost compartment
         for comp in compartments:
-            if all(comp not in tmodel.inner_compartments.get((other_comp, comp), []) for other_comp in compartments if other_comp != comp):
+            if all(comp not in reaction.model.inner_compartments.get((other_comp, comp), []) for other_comp in compartments if other_comp != comp):
                 outer_comp = comp
         
 
