@@ -20,13 +20,13 @@ Requirements
 	```python -m pip install thermo-flux```
 
 ### Local installation
-2b. Now thermo_flux can be safely installed. Clone the thermo_flux repository and navigate to the thermo_flux directory:
+2b. Otherwise thermo_flux can be installed locally, from a cloned repository. Clone the thermo_flux repository and navigate to the thermo_flux directory:
   
 	```git clone https://github.com/molecular-systems-biology/thermo-flux```
 
 	```cd thermo_flux```
 
-3b. For development use the -e flag (for an editable install), navigate to where you cloned the thermo_flux directory and run:
+3b. Run the installation command below - for development use the -e flag (for an editable install) :
 
 	```python -m pip install -e .``` 
 
