@@ -15,16 +15,22 @@ Requirements
 	 
 	```conda activate thermoflux```
 
-2. Now thermo_flux can be safely installed. Clone the thermo_flux repository and navigate to the thermo_flux directory:
+### Installation using pip
+2a. Now thermo_flux can be safely installed using pip.. 
+	```python -m pip install thermo-flux```
+
+### Local installation
+2b. Now thermo_flux can be safely installed. Clone the thermo_flux repository and navigate to the thermo_flux directory:
   
 	```git clone https://github.com/molecular-systems-biology/thermo-flux```
 
 	```cd thermo_flux```
 
-3. For development use the -e flag (for an editable install), navigate to where you cloned the thermo_flux directory and run:
+3b. For development use the -e flag (for an editable install), navigate to where you cloned the thermo_flux directory and run:
 
 	```python -m pip install -e .``` 
-	
+
+### Getting gurobi optimizer
 4. For thermodynamic optimisations, ensure a Gurobi license is installed correctly [(free for academics)](https://www.gurobi.com/academia/academic-program-and-licenses/):
 
 	```conda install -c gurobi gurobi```
