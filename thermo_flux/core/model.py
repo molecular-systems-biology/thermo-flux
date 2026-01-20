@@ -876,7 +876,7 @@ class ThermoModel(Model):
         self._max_drG = value
 
     def add_TFBA_variables(self, m = None, conds=[''], error_type='covariance',
-                           qnorm=2, alpha=0.95, epsilon=0.5, nullspace=None,
+                           qnorm='sep_norm', alpha=0.95, epsilon=0.5, nullspace=None, ## the default is sep norm because simulations are faster
                            gdiss_constraint=False, sigmac_limit=12.3, split_v=False, big_M = False):
 
         if m is None:
