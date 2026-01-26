@@ -195,12 +195,30 @@ class ThermoMetabolite(Metabolite):
             cpd, annotation, formula, inchi, searched = drg_tools.get_suitable_ids(self, update_annotations = update_annotations)
             self.annotation.update(annotation)
             self._compound = cpd
+
+        # for GenerateCompoundResult object?
+        if not isinstance(self._compound, eQ_compound):
+            try : 
+                self._compound = self._compound.compound
+            except :
+                self._compound = None
+                print('Not an eQ_compound object', self._compound)
         return self._compound
 
     @compound.setter #only accept eQ_compound objects or None
     def compound(self, value):
-        if not isinstance(value, eQ_compound) and value is not None:
-            raise ValueError('compound must be an instance of equilibrator_cache.models.compound.Compound')
+        if value is None:
+            self._compound = None
+            return
+        # for GenerateCompoundResult object?
+        if not isinstance(value, eQ_compound):
+            if hasattr(value, "compound"):
+                value = value.compound
+            else :
+                value = None
+                self._compound = None
+                return
+        print(value)
         self._compound = value
 
 
@@ -288,9 +306,13 @@ class ThermoMetabolite(Metabolite):
         '''Check the consistency of a metabolite between the original model definiton and the metabolite identified in equilibrator database for thermodynamic analysis
         '''
         eq_atom_bag = {}
-        if self.compound is not None:
-            if self.compound.atom_bag is not None:
-                eq_atom_bag = self.compound.atom_bag
+        compound = getattr(self, "compound", None)
+
+        if compound is not None:
+            atom_bag = getattr(compound, "atom_bag", None)
+
+            if atom_bag is not None:
+                eq_atom_bag = atom_bag
                 eq_atom_bag.pop('e-', None)  
                 if ignore_H:
                     eq_atom_bag.pop('H', None)

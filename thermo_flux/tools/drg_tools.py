@@ -240,6 +240,14 @@ def get_compound(met: Union[str, eQ_compound, Any]) -> Optional[eQ_compound]:
             
         else:
             cpd, annotation, formula, inchi, searched = get_suitable_ids(met)     
+    
+    ##sometimes the result of the search is a GenerateCompoundResult?
+    if not isinstance(cpd, eQ_compound) and cpd is not None:
+        try : 
+            cpd = met.model.cc.get_compound(cpd)
+        except:
+            print(cpd,'Set to None')
+            cpd = None
 
     return cpd
 
