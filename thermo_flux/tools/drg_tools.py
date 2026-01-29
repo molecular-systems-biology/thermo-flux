@@ -1921,7 +1921,9 @@ def reaction_balance(reaction: Any, balance_charge: bool = True, balance_mg: boo
 
     transporter = False
 
-    if reaction.boundary == False:
+    if reaction.boundary == False and not rxn_already_balanced:
+        ##remove all charge metabolites from the reaction 
+        reaction.add_metabolites({met: -stoich for met, stoich in reaction.metabolites.items() if met in reaction.model.charge_dict.values() })
         if len(reaction.compartments) == 3:
             list_sub_rxn = reaction.split_reaction() # this returns a list of sub reactions (2compartments) and modifies the input reaction
             #We now have : sub reactions with transported metabolites and the initial reaction without the transported metabolites
