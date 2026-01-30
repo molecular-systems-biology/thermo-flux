@@ -8,6 +8,6 @@
 echo "SLURM_JOBID: " $SLURM_JOBID
 
 module purge
-module load Gurobi/10.0.1-GCCcore-11.3.0
+module load Gurobi
 
 # Call Gurobi:

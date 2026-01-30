@@ -1480,6 +1480,9 @@ def calc_transported_mets(reaction: Any) -> Dict[Any, float]:
     if len(reaction.compartments) != 2:
         return {}
     
+    if isinstance(reaction.transported_mets, dict) and reaction.transported_mets: ###if {} then False , otherwise it's a non empty dict so return it
+        return reaction.transported_mets
+    
     inner_comp, outer_comp = _transport_direction(reaction)
 
     inner_mets = comp_split(reaction,inner_comp)
@@ -1503,11 +1506,6 @@ def calc_transported_mets(reaction: Any) -> Dict[Any, float]:
                     else: # take min value and keep sign 
                         transported_mets[met] = np.sign(stoich_in)*min([abs(stoich_in), abs(stoich_out)])
                         transported_mets[met_out] = np.sign(stoich_out)*min([abs(stoich_in), abs(stoich_out)])
-
-
-    if reaction.transported_mets is not None:
-        for met, stoich in reaction.transported_mets.items():
-            transported_mets[met] = stoich
 
                             
     return transported_mets
