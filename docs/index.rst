@@ -39,6 +39,7 @@ Contents
    Installation
    Quickstart
    extended_info
+   Infeasible gurobi model tips
    thermoflux_iMM904_ENS
    api
 
