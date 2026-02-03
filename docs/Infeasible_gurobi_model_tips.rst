@@ -6,9 +6,12 @@ Simulations using a thermodynamic–stoichiometric model rely on the **Gurobi** 
 At this stage, the thermodynamic simulations may still be infeasible or return a zero flux for the objective. The following guidelines and tips can help you diagnose and resolve these issues.
 
 
-1. Identify the Source of Infeasibility
-***************************************
-Most of the debugging can be performed using the built-in function that identifies constraints responsible for infeasibility:
+1. Computing an Irreducible Inconsistent Subsystem (IIS).
+**********************************************************
+An IIS is a subset of the constraints and variable bounds with the following properties:
+*It is still infeasible, and
+*If a single constraint or bound is removed, the subsystem becomes feasible.
+Most of the debugging can be done using the built-in function that identifies constraints responsible for infeasibility:
 
 ```python
 thermo_flux.solver.gurobi.compute_IIS(tmodel)
@@ -20,8 +23,8 @@ For more details, see the official Gurobi documentation:
 Note : an infeasible model is different than zero growth / zero objective flux.To better diagnose the infeasibility issue, you may temporarily **force biomass production** by setting a lower bound on the biomass reaction. This can intentionally render the model infeasible, making it easier for the IIS to identify problematic constraints.
 
 
-2. Check Reaction Directionality and Bounds
-*******************************************
+2. Check reaction directions and flux bounds
+*********************************************
 Reaction directions that are inconsistent with thermodynamic laws (and metabolome data if applied) are a common cause of infeasibility.
 
 * Inspect any **predefined reaction directions**. If a reaction is forced in a direction that is thermodynamically infeasible, the optimization will fail.
@@ -32,8 +35,8 @@ Reaction directions that are inconsistent with thermodynamic laws (and metabolom
   * Are flux bounds (e.g., from physiological data) too restrictive?
 
 
-3. Test for Thermodynamically Infeasible Reactions
-*****************************************************
+3. Identifying the problematic reactions by not applying the second law constraint
+***********************************************************************************
 You can identify problematic reactions by temporarily ignoring the second-law constraints:
 
 1. Set `ignore_snd = True` for all reactions and test whether the model becomes feasible.
