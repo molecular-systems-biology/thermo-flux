@@ -9,18 +9,17 @@ At this stage, the thermodynamic simulations may still be infeasible or return a
 1. Computing an Irreducible Inconsistent Subsystem (IIS).
 **********************************************************
 An IIS is a subset of the constraints and variable bounds with the following properties:
-*It is still infeasible, and
-*If a single constraint or bound is removed, the subsystem becomes feasible.
+* It is still infeasible, and
+* If a single constraint or bound is removed, the subsystem becomes feasible.
 Most of the debugging can be done using the built-in function that identifies constraints responsible for infeasibility:
 
-```python
-thermo_flux.solver.gurobi.compute_IIS(tmodel)
+```thermo_flux.solver.gurobi.compute_IIS(tmodel)
 ```
 
-For more details, see the official Gurobi documentation:
+For more details, we refer you to the Gurobi documentation:
 [https://support.gurobi.com/hc/en-us/articles/15656630439441-How-do-I-use-compute-IIS-to-find-a-subset-of-constraints-that-are-causing-model-infeasibility](https://support.gurobi.com/hc/en-us/articles/15656630439441-How-do-I-use-compute-IIS-to-find-a-subset-of-constraints-that-are-causing-model-infeasibility)
 
-Note : an infeasible model is different than zero growth / zero objective flux.To better diagnose the infeasibility issue, you may temporarily **force biomass production** by setting a lower bound on the biomass reaction. This can intentionally render the model infeasible, making it easier for the IIS to identify problematic constraints.
+Note : an infeasible model is different than zero growth / zero objective flux. To help diagnose the infeasibility issue, you may temporarily **force biomass production** by setting a lower bound on the biomass reaction. This can intentionally render the model infeasible, making it easier for the IIS to identify problematic constraints.
 
 
 2. Check reaction directions and flux bounds
@@ -42,9 +41,9 @@ You can identify problematic reactions by temporarily ignoring the second-law co
 1. Set `ignore_snd = True` for all reactions and test whether the model becomes feasible.
 2. Gradually set `ignore_snd = False` for individual reactions or groups of reactions to isolate the source of infeasibility. To narrow down the reactions which are causing the issue, start by ignoring the second law for the following categories:
 
-* **proton or charge transport reactions** between compartments
-* **all metabolite transport reactions**
-* **complex reactions** that generated warnings during the balancing step
+ * **proton or charge transport reactions** between compartments
+ * **all metabolite transport reactions**
+ * **complex reactions** that generated warnings during the balancing step
 
 Once the model becomes feasible, set `ignore_snd=True` back gradually until the problematic reactions are identified.
 
