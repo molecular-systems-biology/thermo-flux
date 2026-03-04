@@ -27,7 +27,7 @@ Note : an infeasible model is different than zero growth / zero objective flux. 
 Reaction directions that are inconsistent with thermodynamic laws (and metabolome data if applied) are a common cause of infeasibility.
 
 * Inspect any **predefined reaction directions**. If a reaction is forced in a direction that is thermodynamically infeasible, the optimization will fail.
-* As a first test, try allowing all reactions to be **reversible**.
+  * A first test, could be to first allow all reactions to be **reversible**.
 * Verify the **model objective and bounds**:
 
   * Is the biomass lower bound achievable?
@@ -45,6 +45,5 @@ You can identify problematic reactions by temporarily ignoring the second-law co
  * **all metabolite transport reactions**
  * **complex reactions** that generated warnings during the balancing step
 
-Once the model becomes feasible, set `ignore_snd=True` back gradually until the problematic reactions are identified.
 
 
