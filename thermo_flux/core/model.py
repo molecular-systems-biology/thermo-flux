@@ -494,7 +494,7 @@ class ThermoModel(Model):
     @property
     def lc(self):
         if (self._lc is None):
-            from equilibrator_assets.local_compound_cache import LocalCompoundCache
+            from equilibrator_assets.local_compound_cache import LocalCompoundCache ## import here to avoid circular import
             lc = LocalCompoundCache()
 
             cache_name = self.id +'_compound.sqlite'
@@ -529,7 +529,7 @@ class ThermoModel(Model):
         if (self._cc is None):
             print('Initializing component contribution object...')
             self._cc = ComponentContribution(rmse_inf=self.rmse_inf, ccache=self.lc.ccache)
-        return self._cc
+        return self._ccself
 
     @cc.setter
     def cc(self, value):
@@ -541,6 +541,8 @@ class ThermoModel(Model):
 
     @rmse_inf.setter
     def rmse_inf(self, value):
+        if self._cc is not None : 
+            print('rmse_inf should be set before cc is initialized, please set rmse_inf before running update_thermo_info')
         if value != self.rmse_inf:
             self._rmse_inf = value
             self.cc.predictor.preprocess.RMSE_inf = value.m_as('kJ/mol')
