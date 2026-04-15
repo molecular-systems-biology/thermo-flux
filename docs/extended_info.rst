@@ -121,7 +121,7 @@ In ``Thermo-Flux``, the function ``thermo_flux.tools.drg_tools.dfGbm()`` returns
 
 This function uses the following approach:
 
-The standard enthalpy of combustion (:math:`H_c^0`) is estimated using the Patel-Erickson equation, which assumes it is proportional to the number of electrons transferred to oxygen during combustion. Here :math:`n_C`, :math:`n_H`, :math:`n_O`, :math:`n_N`, :math:`n_P` and :math:`n_S` are the number of C, H, O, N, P and S atoms in the biomass empirical formula:
+The standard enthalpy of combustion (:math:`H_c^0`) is estimated using the Patel-Erickson equation, which assumes it is proportional to the number of electrons transferred to oxygen during combustion. Here :math:`n_C`, :math:`n_H`, :math:`n_O`, :math:`n_N`, :math:`n_P` and :math:`n_S` are the number of C, H, O, N, P and S atoms in the biomass elemental formula:
 
 .. math::
 
@@ -145,7 +145,7 @@ From which the Gibbs free energy of formation follows:
 
    \Delta_f G_{bm}^0 = \Delta_f H_{bm}^0 - T \Delta_f S_{bm}^0
 
-Finally, the molar Gibbs formation energy can be converted to a mass-specific value using either the cell dry weight density or the molecular mass from the empirical formula:
+Finally, the Gibbs formation energy can be converted to a mass-specific value using either the cell dry weight density or the molecular mass from the biomass elemental formula:
 
 .. math::
 
@@ -300,7 +300,7 @@ The function ``model.add_TFBA_variables()`` sets up a thermodynamic FBA optimisa
 Units of fluxes and reaction energy vs. biomass-related values
 --------------------------------------------------------------
 
-When specifying the formation energy of the biomass metabolite, values must be given in J·gDW\ :sup:`-1` — unlike all other reactions in the model, which use kJ·mol\ :sup:`-1`. This discrepancy comes from how fluxes are defined: the biomass reaction is typically built from cellular composition measurements expressed in grams per gram of dry cell weight (g·gDW\ :sup:`-1`).
+When specifying the formation energy of the biomass metabolite, values must be given in J·gDW\ :sup:`-1` — unlike all other reactions in the model, which use kJ·mol\ :sup:`-1`. This discrepancy comes from how fluxes are defined: the biomass reaction is typically built from cellular composition measurements expressed in grams per gram of dry cell weight (g·gDW\ :sup:`-1`). Since 'Thermo-Flux' handles all reactions the same when determining the gibbs energy dissipation rate (multiplying :math:`v` by :math:`\Delta_r G`), the biomass formation energy has to be passed in as if it were in kJ·mol\ :sup:`-1`, even though it is physically in J·gDW\ :sup:`-1`.
 
 For a normal reaction, the units work out as:
 
@@ -318,8 +318,7 @@ For the biomass reaction:
    g_{diss}^{bio} = \Delta_f G_{bio} \times \mu
    = (\text{J·gDW}^{-1}) \times (\text{gDW·gDW}^{-1}\text{·h}^{-1})
    = \text{J·gDW}^{-1}\text{·h}^{-1}
-
-} Since thermoflux handles all reactions the same when determining the gibbs energy dissipation rate (multiplying :math:`v` by :math:`\Delta_r G`), the biomass formation energy has to be passed in as if it were in kJ·mol\ :sup:`-1`, even though it is physically in J·gDW\ :sup:`-1`.
+ 
 
 .. rubric:: Box 2: additional considerations for the formulation of the thermodynamic/stoichiometric solution space
 -------------------------------------------------------------------------------------------------------------------
