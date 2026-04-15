@@ -156,19 +156,22 @@ Total (reaction energy)
 
 Adjusting the formation energy of ATP to reduce this imbalance gives a value close to :math:-2802 \, kJ \, mol^{-1}, which is much closer to the reported value of :math:-2811 \, kJ \, mol^{-1}. In general, estimates improve when a metabolite appears in more reactions and when those reactions include more known compounds. If several metabolites in the same reaction are unknown, the estimates become less reliable.
 
-This approach is based on the approximation:
+This approach is based on the following approximation:
 
 .. math::
 
-\Delta_r G^{\circ} = \sum_{i \in \text{known}} S_{ij} \Delta_f G_i^{\circ} + \sum_{i \in \text{unknown}} S_{ij} \Delta_f G_i^{\circ}
+\Delta_r G^{\circ} = \sum_{i \in \mathrm{known}} S_{ij} \Delta_f G_i^{\circ}
+
+\sum_{i \in \mathrm{unknown}} S_{ij} \Delta_f G_i^{\circ}
 
 .. math::
 
-\Delta_r G^{\circ} \ll \sum_{i \in \text{unknown}} S_{ij} \Delta_f G_i^{\circ}
+\Delta_r G^{\circ} \ll \sum_{i \in \mathrm{unknown}} S_{ij} \Delta_f G_i^{\circ}
 
 .. math::
 
-\sum_{i \in \text{unknown}} S_{ij} \Delta_f G_i^{\circ} \approx - \sum_{i \in \text{known}} S_{ij} \Delta_f G_i^{\circ}
+\sum_{i \in \mathrm{unknown}} S_{ij} \Delta_f G_i^{\circ}
+\approx - \sum_{i \in \mathrm{known}} S_{ij} \Delta_f G_i^{\circ
 
 
 Step 4: Delineation of transporter characteristics
