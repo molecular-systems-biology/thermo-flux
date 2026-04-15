@@ -125,53 +125,55 @@ Biomass formation energy is made dependent on the pH of the biomass metabolite�
 
 **Metabolites with unknown formation energy**
 
-By default, metabolites with unknown or non-decomposable structures are assigned a formation energy of :math:0 \, kJ \, mol^{-1}. As a result, they do not contribute to reaction energy calculations, which can lead to unrealistic reaction energies and large corrections later on.
+By default, metabolites with unknown or non-decomposable structures are assigned a mean formation energy of 0 kJ·mol\ :sup:`-1`, meaning they are excluded from reaction energy calculations. This can be problematic — large absolute errors may be needed to estimate feasible reaction energies. To get better estimates, we can exploit the reaction stoichiometry already present in the model.
 
-To improve these estimates, information from reaction stoichiometry can be used. Unknown metabolites usually appear in reactions together with compounds that have known formation energies. In these cases, deviations in reaction energy are mainly caused by the missing formation energy terms. Since biochemical reactions typically operate near equilibrium, their energies are expected to be close to zero. Large deviations therefore indicate poor estimates of unknown formation energies.
+When an unknown metabolite appears in a reaction alongside known ones, the reaction energy is shifted by roughly the magnitude of the unknown formation energy. Since metabolic systems tend to operate near equilibrium, reaction energies should be close to 0. We can therefore assume that a large computed reaction energy mostly reflects the gap between the true and assumed (0) formation energy of the unknown compound. Pushing the estimated formation energy toward cancelling the reaction energy gives a better approximation — and because reactions share metabolites, this can be solved as a least-squares problem across multiple reactions simultaneously.
 
-A practical approach is to adjust the formation energies of unknown metabolites so that reaction energies are brought closer to zero across all affected reactions. This is done by regressing the uncertainty in reaction energies against the negative of the mean standard reaction energies. The least-squares solution gives an error vector :math:\mathbf{m}, which is combined with the square-root covariance matrix (for unknown compounds) to obtain updated formation energies.
+In practice, for reactions containing unknown compounds, the uncertainty in reaction energy is regressed against the negative of the mean standard reaction energies. The least-squares solution yields an error vector **m**, which is multiplied by the relevant part of the square-root covariance matrix to convert back into formation energies, giving updated mean formation energies for the unknown compounds.
 
-As an example, consider ATP hydrolysis where the formation energy of ATP is initially set to :math:0 \, kJ \, mol^{-1}. The resulting reaction energy is :math:-2802 \, kJ \, mol^{-1}:
+Example — ATP hydrolysis:
+
+Say the formation energy of ATP is unknown and assumed to be 0 kJ·mol\ :sup:`-1`. The computed :math:`\Delta_r G` of ATP hydrolysis then becomes −2802 kJ·mol\ :sup:`-1`:
 
 .. list-table::
-:header-rows: 1
+   :header-rows: 1
+   :widths: 30 20 35
+   :align: center
 
-Metabolite
-Stoichiometry
-Formation energy × Stoichiometry
-ATP
--1
-0
-H\ :sub:2\ O
--1
-238
-ADP
-+1
--1945
-Pi
-+1
--1095
-Total (reaction energy)
--2802
+   * - **Metabolite**
+     - **Stoichiometry**
+     - **Formation energy × Stoichiometry**
+   * - ATP
+     - −1
+     - 0
+   * - H\ :sub:`2`\ O
+     - −1
+     - 238
+   * - ADP
+     - +1
+     - −1945
+   * - Pᵢ
+     - +1
+     - −1095
+   * - **Total (reaction energy)**
+     -
+     - **−2802**
 
-Adjusting the formation energy of ATP to reduce this imbalance gives a value close to :math:-2802 \, kJ \, mol^{-1}, which is much closer to the reported value of :math:-2811 \, kJ \, mol^{-1}. In general, estimates improve when a metabolite appears in more reactions and when those reactions include more known compounds. If several metabolites in the same reaction are unknown, the estimates become less reliable.
+Shifting ATP's formation energy to cancel this reaction energy moves it toward −2802 kJ·mol\ :sup:`-1` — much closer to the true value of −2811 kJ·mol\ :sup:`-1`, and far better than 0. The more reactions a metabolite participates in, and the more known metabolites those reactions contain, the better the estimate. Conversely, if many unknowns appear together in the same reaction, individual estimates become less reliable.
 
-This approach is based on the following approximation:
-
-.. math::
-
-\Delta_r G^{\circ} = \sum_{i \in \mathrm{known}} S_{ij} \Delta_f G_i^{\circ}
-
-\sum_{i \in \mathrm{unknown}} S_{ij} \Delta_f G_i^{\circ}
+The underlying logic in equation form:
 
 .. math::
 
-\Delta_r G^{\circ} \ll \sum_{i \in \mathrm{unknown}} S_{ij} \Delta_f G_i^{\circ}
+   \Delta_r G^{\circ} = \sum_{i \in \text{known}} S_{ij} \Delta_f G_i^{\circ} + \sum_{i \in \text{unknown}} S_{ij} \Delta_f G_i^{\circ}
 
 .. math::
 
-\sum_{i \in \mathrm{unknown}} S_{ij} \Delta_f G_i^{\circ}
-\approx - \sum_{i \in \mathrm{known}} S_{ij} \Delta_f G_i^{\circ
+   \Delta_r G^{\circ} \ll \sum_{i \in \text{unknown}} S_{ij} \Delta_f G_i^{\circ}
+
+.. math::
+
+   \sum_{i \in \text{unknown}} S_{ij} \Delta_f G_i^{\circ} \approx -\sum_{i \in \text{known}} S_{ij} \Delta_f G_i^{\circ}
 
 
 Step 4: Delineation of transporter characteristics
