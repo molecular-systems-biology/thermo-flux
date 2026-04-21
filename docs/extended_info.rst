@@ -280,6 +280,7 @@ Step 6: Calculation of Gibbs energy of reactions
 
 To calculate the standard reaction energy of all reactions in the model, the function ``model.update_thermo_info()`` can be used. Once it has been run, the standard reaction energy and the standard transformed reaction energy (calculated using standard transformed formation energies) can be retrieved for each reaction with ``reaction.drG0`` and ``reaction.drG0prime``, respectively.
 
+Note : reactions occurring within the lipid bilayer (such as those catalysed by membrane-embedded enzymes like the respiratory chain complexes) represent a limitation of the current framework. This limit manifests in two ways: ΔfG° estimates for membrane-phase species are unreliable, as group contribution methods are trained on aqueous-phase data and perform poorly for compounds with long hydrophobic tails; and the concentration-dependent term of the Gibbs energy is ill-defined for species lacking a true aqueous concentration. To mitigate over-constraining reaction directionality with inaccurate thermodynamic data, we recommend assigning wide concentration bounds to such species, a practice suggested by Elad Noor to the eQuilibrator community (https://groups.google.com/g/equilibrator-users/c/ARvwhQSo5rU/m/XOwFTdbIAQAJ).
 
 Step 7: Establishment of the thermodynamic-stoichiometric solution space
 ************************************************************************
