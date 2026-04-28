@@ -529,7 +529,7 @@ class ThermoModel(Model):
         if (self._cc is None):
             print('Initializing component contribution object...')
             self._cc = ComponentContribution(rmse_inf=self.rmse_inf, ccache=self.lc.ccache)
-        return self._ccself
+        return self._cc
 
     @cc.setter
     def cc(self, value):
