@@ -72,6 +72,8 @@ def add_TFBA_variables(tmodel, m, conds=[''], error_type='linear',
         mvars['vn'] = vn
     
     #import bounds from tmodel 
+    feasvar = m.addVar(lb=0, ub=0, name = 'feasvar') ## introduce a variable to allow the MIP start to be feasible when loading fluxes, change ub to reproduce
+
     for cond_index, cond in enumerate(conds):
         ln_conc[cond_index,:].lb = [np.log(met.lower_bound.m_as('M')) for met in tmodel.metabolites]
         ln_conc[cond_index,:].ub = [np.log(met.upper_bound.m_as('M')) for met in tmodel.metabolites]
@@ -102,7 +104,6 @@ def add_TFBA_variables(tmodel, m, conds=[''], error_type='linear',
         ### TFBA on BiGG models : added a feastol variable to allow the MIP start (from FBA)to be feasible when loading fluxes 
         ### the feasvar is then minimized in the objective funciton and has almost no impact on the solution
         mass_balance = 'strict'
-        feasvar = m.addVar(lb=0, ub=0, name = 'feasvar') ## introduce a variable to allow the MIP start to be feasible when loading fluxes, change ub to reproduce
 
         if mass_balance=='strict':
             m.addConstr(S@v[cond_index] == 0, name = 'mass_balance_'+str(cond))
